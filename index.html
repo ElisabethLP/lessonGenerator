@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Структуры Урока</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Генератор Структуры Урока</h1>
+    </header>
+
+    <main>
+        <!-- Генерация -->
+        <section id="generator-section">
+            <button id="generate-button">Создать структуру урока</button>
+            <div id="lesson-structure-container"></div>
+        </section>
+
+        <!-- Все приёмы -->
+        <section id="all-techniques-section">
+            <h2>Все приёмы</h2>
+            <button id="show-all-button">Показать все приёмы</button>
+            <div id="all-techniques-container" style="display: none;"></div>
+        </section>
+
+        <!-- Добавление приёма -->
+        <section id="add-technique-section">
+            <h2>Добавить свой приём</h2>
+            <button id="show-add-form-button">Добавить новый приём</button>
+
+            <form id="add-technique-form" style="display: none;">
+                <label for="technique-name">Название приёма:</label>
+                <input type="text" id="technique-name" required>
+
+                <label for="technique-description">Описание:</label>
+                <textarea id="technique-description"></textarea>
+
+                <button type="submit">Сохранить приём</button>
+                <button type="button" id="cancel-add-button">Отмена</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Индивидуальный проект прототип</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

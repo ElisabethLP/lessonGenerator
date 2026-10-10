@@ -1,5 +1,5 @@
 // ========== НАСТРОЙКИ ==========
-const BIN_ID = "6aca3116ac6210605a254c5b";
+const BIN_ID = "6aca6053ffd5d160535f60d4";
 const API_KEY = "$2a$10$HqwI67byOuJbl7QVZ9i7e.0INdTSSup4UknNi8upvUl6PUF0YsC9S";
 const ADMIN_PASSWORD = "88888888"; // ПАРОЛЬ ДЛЯ УДАЛЕНИЯ
 

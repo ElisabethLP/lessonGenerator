@@ -6,13 +6,13 @@
 
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f4f7f4;
-    color: #2c3e2c;
+    background-color: #f0f4f5;
+    color: #2c3e50;
     line-height: 1.6;
 }
 
 header {
-    background-color: #5B8C5A;
+    background-color: #50a3a2;
     color: white;
     text-align: center;
     padding: 24px 20px;
@@ -39,7 +39,7 @@ section {
 }
 
 button {
-    background-color: #5B8C5A;
+    background-color: #50a3a2;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -50,7 +50,7 @@ button {
 }
 
 button:hover {
-    background-color: #4a7549;
+    background-color: #3f8a89;
 }
 
 button:active {
@@ -67,19 +67,19 @@ button:active {
 #show-all-button,
 #show-add-form-button {
     background-color: transparent;
-    color: #5B8C5A;
-    border: 1.5px solid #5B8C5A;
+    color: #50a3a2;
+    border: 1.5px solid #50a3a2;
     margin-top: 10px;
 }
 
 #show-all-button:hover,
 #show-add-form-button:hover {
-    background-color: #5B8C5A;
+    background-color: #50a3a2;
     color: white;
 }
 
 h2 {
-    color: #3d5c3c;
+    color: #2c5f5e;
     margin-bottom: 16px;
     font-size: 1.25rem;
 }
@@ -92,8 +92,8 @@ h2 {
 
 #lesson-structure-container li,
 #all-techniques-container li {
-    background: #f0f5f0;
-    border-left: 4px solid #5B8C5A;
+    background: #eef5f5;
+    border-left: 4px solid #50a3a2;
     padding: 14px 18px;
     margin-bottom: 12px;
     border-radius: 0 8px 8px 0;
@@ -101,7 +101,7 @@ h2 {
 
 #lesson-structure-container li strong,
 #all-techniques-container li strong {
-    color: #3d5c3c;
+    color: #2c5f5e;
 }
 
 form {
@@ -112,14 +112,14 @@ label {
     display: block;
     margin-bottom: 6px;
     font-weight: 500;
-    color: #3d5c3c;
+    color: #2c5f5e;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
     padding: 10px 12px;
-    border: 1.5px solid #c5d5c5;
+    border: 1.5px solid #c5d5d5;
     border-radius: 8px;
     font-size: 1rem;
     margin-bottom: 14px;
@@ -129,8 +129,8 @@ textarea {
 input[type="text"]:focus,
 textarea:focus {
     outline: none;
-    border-color: #5B8C5A;
-    box-shadow: 0 0 0 3px rgba(91, 140, 90, 0.15);
+    border-color: #50a3a2;
+    box-shadow: 0 0 0 3px rgba(80, 163, 162, 0.15);
 }
 
 textarea {
@@ -139,32 +139,32 @@ textarea {
 }
 
 .delete-btn {
-    background-color: #c75c5c !important;
+    background-color: #e53e3e !important;
     margin-top: 8px;
     padding: 6px 14px !important;
     font-size: 0.9rem !important;
 }
 
 .delete-btn:hover {
-    background-color: #a84848 !important;
+    background-color: #c53030 !important;
 }
 
 #cancel-add-button {
     background-color: transparent;
-    color: #5B8C5A;
-    border: 1.5px solid #5B8C5A;
+    color: #50a3a2;
+    border: 1.5px solid #50a3a2;
     margin-left: 10px;
 }
 
 #cancel-add-button:hover {
-    background-color: #5B8C5A;
+    background-color: #50a3a2;
     color: white;
 }
 
 footer {
     text-align: center;
     padding: 20px;
-    color: #7a8f7a;
+    color: #7a9090;
     font-size: 0.9rem;
 }
 

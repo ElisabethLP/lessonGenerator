@@ -1,9 +1,6 @@
 // ========== НАСТРОЙКИ ==========
-const BIN_ID = "https://api.jsonbin.io/v3/b/6aca6053ffd5d160535f60d4";
-const API_KEY = "$2a$10$HqwI67byOuJbl7QVZ9i7e.0INdTSSup4UknNi8upvUl6PUF0YsC9S";
-const ADMIN_PASSWORD = "88888888"; // ПАРОЛЬ ДЛЯ УДАЛЕНИЯ
-
-const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
+const ADMIN_PASSWORD = "88888888"; // пароль
 
 // ========== ПЕРЕМЕННЫЕ ==========
 let allTechniques = [];
@@ -11,35 +8,13 @@ let allTechniques = [];
 // ========== ЗАГРУЗКА ПРИЁМОВ ==========
 async function loadTechniques() {
     try {
-        const response = await fetch(BIN_URL + "/latest", {
-            headers: {
-                "X-Master-Key": API_KEY
-            }
-        });
-        const data = await response.json();
-        allTechniques = data.record;
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Ошибка сети");
+        allTechniques = await response.json();
         console.log("Приёмы загружены:", allTechniques.length);
     } catch (error) {
         console.error("Ошибка загрузки:", error);
-        alert("Не удалось загрузить приёмы. Проверьте интернет и ключи.");
-    }
-}
-
-// ========== СОХРАНЕНИЕ ПРИЁМОВ ==========
-async function saveTechniques() {
-    try {
-        await fetch(BIN_URL, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "X-Master-Key": API_KEY
-            },
-            body: JSON.stringify(allTechniques)
-        });
-        console.log("Приёмы сохранены");
-    } catch (error) {
-        console.error("Ошибка сохранения:", error);
-        alert("Не удалось сохранить изменения.");
+        alert("Не удалось загрузить приёмы. Проверьте интернет.");
     }
 }
 
@@ -78,7 +53,7 @@ ${tech.description || 'Нет описания'}`;
     container.appendChild(ul);
 }
 
-// ========== ПОКАЗАТЬ ВСЕ ПРИЁМЫ + УДАЛЕНИЕ ==========
+// ========== ПОКАЗАТЬ ВСЕ ПРИЁМЫ ==========
 function displayAllTechniques() {
     const container = document.getElementById('all-techniques-container');
     container.innerHTML = '';
@@ -90,7 +65,6 @@ function displayAllTechniques() {
     }
 
     const ul = document.createElement('ul');
-
     allTechniques.forEach((tech, index) => {
         const li = document.createElement('li');
         li.innerHTML = `
@@ -100,50 +74,44 @@ function displayAllTechniques() {
             
 
             <button class="delete-btn" data-id="${tech.id}" 
-                style="margin-top:8px; background:#e53e3e; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:14px;">
+                style="margin-top:8px; background:#e53e3e; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">
                 Удалить
             </button>
         `;
         ul.appendChild(li);
     });
-
     container.appendChild(ul);
 
-    // Навешиваем обработчики на кнопки удаления
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', handleDeleteTechnique);
     });
 }
 
-// ========== УДАЛЕНИЕ ПРИЁМА ==========
+// ========== УДАЛЕНИЕ ==========
 async function handleDeleteTechnique(event) {
     const password = prompt("Введите пароль администратора:");
-
     if (password !== ADMIN_PASSWORD) {
-        alert("Неверный пароль. Удаление запрещено.");
+        alert("Неверный пароль.");
         return;
     }
 
-    const id = Number(event.target.dataset.id);
-    const technique = allTechniques.find(t => t.id === id);
-
+    const id = event.target.dataset.id;
+    const technique = allTechniques.find(t => t.id == id);
     if (!technique) return;
 
-    const confirmDelete = confirm(`Вы точно хотите удалить приём «${technique.name}»?`);
-    if (!confirmDelete) return;
+    if (!confirm(`Удалить приём «${technique.name}»?`)) return;
 
-    // Удаляем из массива
-    allTechniques = allTechniques.filter(t => t.id !== id);
-
-    // Сохраняем в JSONBin
-    await saveTechniques();
-
-    // Обновляем список
-    displayAllTechniques();
-    alert("Приём успешно удалён.");
+    try {
+        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        allTechniques = allTechniques.filter(t => t.id != id);
+        displayAllTechniques();
+        alert("Приём удалён.");
+    } catch (error) {
+        alert("Ошибка при удалении.");
+    }
 }
 
-// ========== ДОБАВЛЕНИЕ ПРИЁМА ==========
+// ========== ДОБАВЛЕНИЕ ==========
 function toggleAddForm(show) {
     const form = document.getElementById('add-technique-form');
     const btn = document.getElementById('show-add-form-button');
@@ -170,20 +138,24 @@ async function handleAddTechnique(event) {
         return;
     }
 
-    const newTechnique = {
-        id: Date.now(),
-        name: name,
-        description: description || ''
-    };
+    const newTechnique = { name, description: description || '' };
 
-    allTechniques.push(newTechnique);
-    await saveTechniques();
-    toggleAddForm(false);
-    alert('Приём добавлен и теперь виден всем!');
-
-    // Обновляем список, если он открыт
-    if (document.getElementById('all-techniques-container').style.display === 'block') {
-        displayAllTechniques();
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newTechnique)
+        });
+        const created = await response.json();
+        allTechniques.push(created);
+        toggleAddForm(false);
+        alert('Приём добавлен!');
+        
+        if (document.getElementById('all-techniques-container').style.display === 'block') {
+            displayAllTechniques();
+        }
+    } catch (error) {
+        alert("Ошибка при добавлении приёма.");
     }
 }
 

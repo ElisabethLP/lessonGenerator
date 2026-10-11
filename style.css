@@ -1,136 +1,179 @@
-body {
-    font-family: sans-serif;
-    line-height: 1.6;
+* {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    box-sizing: border-box;
 }
 
-.container {
-    max-width: 960px;
-    margin: 20px auto;
-    padding: 0 20px;
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f7f4;
+    color: #2c3e2c;
+    line-height: 1.6;
 }
 
 header {
-    background: #50a3a2;
-    color: #fff;
-    padding: 1rem 0;
+    background-color: #5B8C5A;
+    color: white;
     text-align: center;
-    margin-bottom: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
-    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
 }
 
 main {
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-    border-radius: 8px;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
 }
 
-#generator-section, #add-technique-section {
-    margin-bottom: 30px;
-    text-align: center;
+section {
+    background: white;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
-#generate-button, #show-add-form-button {
-    display: inline-block;
-    background: #50a3a2;
-    color: #fff;
-    padding: 10px 20px;
+button {
+    background-color: #5B8C5A;
+    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
-    font-size: 1.1em;
-    margin-bottom: 15px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-#generate-button:hover, #show-add-form-button:hover {
-    background: #3c8c8b;
+button:hover {
+    background-color: #4a7549;
 }
 
-#lesson-structure-container ul {
+button:active {
+    transform: scale(0.98);
+}
+
+#generate-button {
+    display: block;
+    margin: 0 auto 20px;
+    font-size: 1.1rem;
+    padding: 14px 32px;
+}
+
+#show-all-button,
+#show-add-form-button {
+    background-color: transparent;
+    color: #5B8C5A;
+    border: 1.5px solid #5B8C5A;
+    margin-top: 10px;
+}
+
+#show-all-button:hover,
+#show-add-form-button:hover {
+    background-color: #5B8C5A;
+    color: white;
+}
+
+h2 {
+    color: #3d5c3c;
+    margin-bottom: 16px;
+    font-size: 1.25rem;
+}
+
+#lesson-structure-container ul,
+#all-techniques-container ul {
     list-style: none;
     padding: 0;
-    text-align: left;
-    max-width: 600px;
-    margin: 20px auto;
-    border: 1px solid #eee;
-    padding: 15px;
-    border-radius: 5px;
 }
 
-#lesson-structure-container li {
-    margin-bottom: 10px;
-    padding: 8px;
-    background-color: #f9f9f9;
-    border-left: 4px solid #50a3a2;
+#lesson-structure-container li,
+#all-techniques-container li {
+    background: #f0f5f0;
+    border-left: 4px solid #5B8C5A;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 0 8px 8px 0;
 }
 
-#add-technique-form {
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    text-align: left;
-    background-color: #fdfdfd;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+#lesson-structure-container li strong,
+#all-techniques-container li strong {
+    color: #3d5c3c;
 }
 
-#add-technique-form label {
+form {
+    margin-top: 16px;
+}
+
+label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #3d5c3c;
 }
 
-#add-technique-form input[type="text"],
-#add-technique-form textarea {
-    width: calc(100% - 20px); /* Учитываем padding */
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #c5d5c5;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 14px;
+    font-family: inherit;
 }
 
-#add-technique-form button[type="submit"] {
-    background: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 10px;
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #5B8C5A;
+    box-shadow: 0 0 0 3px rgba(91, 140, 90, 0.15);
 }
 
-#add-technique-form button[type="submit"]:hover {
-    background: #218838;
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.delete-btn {
+    background-color: #c75c5c !important;
+    margin-top: 8px;
+    padding: 6px 14px !important;
+    font-size: 0.9rem !important;
+}
+
+.delete-btn:hover {
+    background-color: #a84848 !important;
 }
 
 #cancel-add-button {
-    background: #6c757d;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: transparent;
+    color: #5B8C5A;
+    border: 1.5px solid #5B8C5A;
+    margin-left: 10px;
 }
 
 #cancel-add-button:hover {
-    background: #5a6268;
+    background-color: #5B8C5A;
+    color: white;
 }
 
 footer {
     text-align: center;
-    margin-top: 30px;
-    padding: 1rem 0;
-    color: #777;
-    font-size: 0.9em;
+    padding: 20px;
+    color: #7a8f7a;
+    font-size: 0.9rem;
+}
+
+max-width: 600px {
+    header h1 {
+        font-size: 1.4rem;
+    }
+
+    section {
+        padding: 20px;
+    }
 }

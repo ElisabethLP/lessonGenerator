@@ -3,25 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Структуры Урока</title>
+    <title>Конструктор Структуры Урока</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>Генератор Структуры Урока</h1>
+        <h1>Конструктор Структуры Урока</h1>
     </header>
 
     <main>
         <!-- Генерация -->
         <section id="generator-section">
             <button id="generate-button">Создать структуру урока</button>
+
             <div id="lesson-structure-container"></div>
+
+            <!-- Кнопки действий -->
+            <div id="result-actions" style="display: none; margin-top: 15px;">
+                <button id="copy-button">📋 Копировать</button>
+                <button id="regenerate-button">🎲 Сгенерировать заново</button>
+                <p style="font-size: 0.9em; color: #777; margin-top: 8px;">Не подошло? Попробовать снова</p>
+            </div>
         </section>
 
-        <!-- Все приёмы -->
+        <!-- Все приёмы с фильтрами -->
         <section id="all-techniques-section">
             <h2>Все приёмы</h2>
+
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">Все</button>
+                <button class="filter-btn" data-category="актуализация">Актуализация</button>
+                <button class="filter-btn" data-category="основной этап">Основной этап</button>
+                <button class="filter-btn" data-category="закрепление">Закрепление</button>
+                <button class="filter-btn" data-category="физкультминутка">Физкультминутка</button>
+                <button class="filter-btn" data-category="рефлексия">Рефлексия</button>
+            </div>
+
             <button id="show-all-button">Показать все приёмы</button>
             <div id="all-techniques-container" style="display: none;"></div>
         </section>
@@ -35,6 +53,16 @@
                 <label for="technique-name">Название приёма:</label>
                 <input type="text" id="technique-name" required>
 
+                <label for="technique-category">Категория:</label>
+                <select id="technique-category" required>
+                    <option value="">— Выберите категорию —</option>
+                    <option value="актуализация">Актуализация</option>
+                    <option value="основной этап">Основной этап</option>
+                    <option value="закрепление">Закрепление</option>
+                    <option value="физкультминутка">Физкультминутка</option>
+                    <option value="рефлексия">Рефлексия</option>
+                </select>
+
                 <label for="technique-description">Описание:</label>
                 <textarea id="technique-description"></textarea>
 
@@ -45,7 +73,7 @@
     </main>
 
     <footer>
-        <p>© 2026 Индивидуальный проект прототип</p>
+        <p>© 2026 Индивидуальный проект</p>
     </footer>
 
     <script src="script.js"></script>

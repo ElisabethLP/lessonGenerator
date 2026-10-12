@@ -13,21 +13,21 @@
     </header>
 
     <main>
-        <!-- Генерация -->
+        <!-- ========== ГЕНЕРАЦИЯ ========== -->
         <section id="generator-section">
             <button id="generate-button">Создать структуру урока</button>
 
             <div id="lesson-structure-container"></div>
 
-            <!-- Кнопки действий -->
-            <div id="result-actions" style="display: none; margin-top: 15px;">
+            <!-- Кнопки действий: появляются только после первой генерации -->
+            <div id="result-actions" style="display: none;">
                 <button id="copy-button">📋 Копировать</button>
                 <button id="regenerate-button">🎲 Сгенерировать заново</button>
-                <p style="font-size: 0.9em; color: #777; margin-top: 8px;">Не подошло? Попробовать снова</p>
+                <p class="hint">Не подошло? Попробовать снова</p>
             </div>
         </section>
 
-        <!-- Все приёмы с фильтрами -->
+        <!-- ========== ВСЕ ПРИЁМЫ С ФИЛЬТРАМИ ========== -->
         <section id="all-techniques-section">
             <h2>Все приёмы</h2>
 
@@ -41,10 +41,16 @@
             </div>
 
             <button id="show-all-button">Показать все приёмы</button>
+
+            <!-- Кнопка закрытия сверху: появляется только когда список открыт -->
+            <div id="close-list-wrapper" style="display: none;">
+                <button id="hide-all-button">↑ Скрыть список</button>
+            </div>
+
             <div id="all-techniques-container" style="display: none;"></div>
         </section>
 
-        <!-- Добавление приёма -->
+        <!-- ========== ДОБАВЛЕНИЕ ПРИЁМА ========== -->
         <section id="add-technique-section">
             <h2>Добавить свой приём</h2>
             <button id="show-add-form-button">Добавить новый приём</button>

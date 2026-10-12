@@ -1,232 +1,103 @@
-* {
+/* ========== ОБЩИЕ СТИЛИ ========== */
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f0f4f5;
-    color: #2c3e50;
-    line-height: 1.6;
-}
-
-header {
-    background-color: #50a3a2;
-    color: white;
-    text-align: center;
-    padding: 24px 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-header h1 {
-    font-size: 1.8rem;
-    font-weight: 600;
-}
-
-main {
-    max-width: 800px;
-    margin: 30px auto;
+.container {
+    max-width: 960px;
+    margin: 20px auto;
     padding: 0 20px;
 }
 
-section {
-    background: white;
-    border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+header {
+    background: #50a3a2;
+    color: #fff;
+    padding: 1.2rem 0;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
+header h1 {
+    margin: 0;
+    font-size: 1.6em;
+}
+
+main {
+    max-width: 960px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* ========== СЕКЦИИ ========== */
+#generator-section,
+#add-technique-section,
+#all-techniques-section {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+#all-techniques-section h2,
+#add-technique-section h2 {
+    margin-top: 0;
+    color: #3c8c8b;
+}
+
+/* ========== КНОПКИ ========== */
 button {
-    background-color: #50a3a2;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-button:hover {
-    background-color: #3f8a89;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-#generate-button {
-    display: block;
-    margin: 0 auto 20px;
-    font-size: 1.1rem;
-    padding: 14px 32px;
-}
-
-#show-all-button,
-#show-add-form-button {
-    background-color: transparent;
-    color: #50a3a2;
-    border: 1.5px solid #50a3a2;
-    margin-top: 10px;
-}
-
-#show-all-button:hover,
-#show-add-form-button:hover {
-    background-color: #50a3a2;
-    color: white;
-}
-
-h2 {
-    color: #2c5f5e;
-    margin-bottom: 16px;
-    font-size: 1.25rem;
-}
-
-#lesson-structure-container ul,
-#all-techniques-container ul {
-    list-style: none;
-    padding: 0;
-}
-
-#lesson-structure-container li,
-#all-techniques-container li {
-    background: #eef5f5;
-    border-left: 4px solid #50a3a2;
-    padding: 14px 18px;
-    margin-bottom: 12px;
-    border-radius: 0 8px 8px 0;
-}
-
-#lesson-structure-container li strong,
-#all-techniques-container li strong {
-    color: #2c5f5e;
-}
-
-form {
-    margin-top: 16px;
-}
-
-label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #2c5f5e;
-}
-
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid #c5d5d5;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 14px;
     font-family: inherit;
 }
 
-input[type="text"]:focus,
-textarea:focus {
-    outline: none;
-    border-color: #50a3a2;
-    box-shadow: 0 0 0 3px rgba(80, 163, 162, 0.15);
-}
-
-textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
-.delete-btn {
-    background-color: #e53e3e !important;
-    margin-top: 8px;
-    padding: 6px 14px !important;
-    font-size: 0.9rem !important;
-}
-
-.delete-btn:hover {
-    background-color: #c53030 !important;
-}
-
-#cancel-add-button {
-    background-color: transparent;
-    color: #50a3a2;
-    border: 1.5px solid #50a3a2;
-    margin-left: 10px;
-}
-
-#cancel-add-button:hover {
-    background-color: #50a3a2;
-    color: white;
-}
-
-footer {
-    text-align: center;
-    padding: 20px;
-    color: #7a9090;
-    font-size: 0.9rem;
-}
-
-max-width: 600px {
-    header h1 {
-        font-size: 1.4rem;
-    }
-
-    section {
-        padding: 20px;
-    }
-}/* ========== КАТЕГОРИИ И ФИЛЬТРЫ ========== */
-.category-tag {
+#generate-button,
+#show-add-form-button,
+#show-all-button {
     display: inline-block;
     background: #50a3a2;
     color: #fff;
-    font-size: 0.75em;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-.filter-btn {
-    background: #e0e0e0;
-    color: #333;
-    padding: 6px 14px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.filter-btn:hover {
-    background: #d0d0d0;
-}
-
-.filter-btn.active {
-    background: #50a3a2;
-    color: #fff;
-}
-
-/* ========== ВЫПАДАЮЩИЙ СПИСОК ========== */
-#technique-category {
-    width: 100%;
-    padding: 10px;
+    font-size: 1.1em;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+}
+
+#generate-button:hover,
+#show-add-form-button:hover,
+#show-all-button:hover {
+    background: #3c8c8b;
+}
+
+/* ========== СТРУКТУРА УРОКА ========== */
+#lesson-structure-container ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    max-width: 600px;
+    margin: 20px auto;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#lesson-structure-container li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #50a3a2;
     border-radius: 4px;
-    font-size: 1em;
-    background: #fff;
-    cursor: pointer;
+}
+
+#lesson-structure-container li:last-child {
+    margin-bottom: 0;
 }
 
 /* ========== КНОПКИ ДЕЙСТВИЙ ========== */
@@ -235,6 +106,7 @@ max-width: 600px {
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
+    margin-top: 15px;
 }
 
 #copy-button {
@@ -267,6 +139,96 @@ max-width: 600px {
     background: #ec971f;
 }
 
+.hint {
+    font-size: 0.9em;
+    color: #777;
+    margin: 8px 0 0;
+    flex-basis: 100%;
+    text-align: center;
+}
+
+/* ========== ФИЛЬТРЫ ========== */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.filter-btn {
+    background: #e0e0e0;
+    color: #333;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: #d0d0d0;
+}
+
+.filter-btn.active {
+    background: #50a3a2;
+    color: #fff;
+}
+
+/* ========== КАТЕГОРИИ ========== */
+.category-tag {
+    display: inline-block;
+    background: #50a3a2;
+    color: #fff;
+    font-size: 0.75em;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========== СПИСОК ВСЕХ ПРИЁМОВ ========== */
+#all-techniques-container ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    max-width: 700px;
+    margin: 20px auto;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#all-techniques-container li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #50a3a2;
+    border-radius: 4px;
+}
+
+#close-list-wrapper {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#hide-all-button {
+    background: #6c757d;
+    color: #fff;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease;
+}
+
+#hide-all-button:hover {
+    background: #5a6268;
+}
+
 /* ========== КНОПКА УДАЛЕНИЯ ========== */
 .delete-btn {
     background: #dc3545;
@@ -284,9 +246,88 @@ max-width: 600px {
     background: #c82333;
 }
 
+/* ========== ФОРМА ДОБАВЛЕНИЯ ========== */
+#add-technique-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    text-align: left;
+    background-color: #fdfdfd;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#add-technique-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#add-technique-form input[type="text"],
+#add-technique-form textarea,
+#add-technique-form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    font-family: inherit;
+    background: #fff;
+}
+
+#add-technique-form select {
+    width: 100%;
+    cursor: pointer;
+}
+
+#add-technique-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+#add-technique-form button[type="submit"] {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#add-technique-form button[type="submit"]:hover {
+    background: #218838;
+}
+
+#cancel-add-button {
+    background: #6c757d;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#cancel-add-button:hover {
+    background: #5a6268;
+}
+
+/* ========== ПОДВАЛ ========== */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 1rem 0;
+    color: #777;
+    font-size: 0.9em;
+}
+
 /* ========== АДАПТИВНОСТЬ ========== */
-max-width: 500px {
-    #copy-button, #regenerate-button {
+@media (max-width: 500px) {
+    #copy-button,
+    #regenerate-button {
         display: block;
         width: 100%;
         margin: 5px 0;
@@ -299,5 +340,10 @@ max-width: 500px {
 
     .filter-btn {
         width: 100%;
+    }
+
+    main {
+        margin: 10px;
+        padding: 15px;
     }
 }

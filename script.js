@@ -3,7 +3,8 @@ const API_KEY = "692034921bcfc838bcdf17cdb79377e9";
 const API_URL = "https://jsonbox.ru/api.php";
 const ADMIN_PASSWORD = "88888888";
 
-// Базовые приёмы — используются только при первом запуске
+// ========== БАЗОВЫЕ ПРИЁМЫ ==========
+// Используются только при первом запуске, когда база JsonBox пуста
 const DEFAULT_TECHNIQUES = [
     { name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики." },
     { name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал." },
@@ -33,36 +34,30 @@ let currentFilter = "all";
 
 // ========== ХРАНЕНИЕ (JsonBox) ==========
 
-// Загрузка всех приёмов с сервера
+// Загрузка всех приёмов
 async function loadTechniques() {
     try {
         const response = await fetch(`${API_URL}?action=get&api_key=${API_KEY}`);
         if (!response.ok) throw new Error("Не удалось загрузить приёмы");
 
         const data = await response.json();
-
-        // JsonBox возвращает данные в разных форматах — нормализуем
         let raw = data.data ?? data;
 
-        // Если это объект с ключом techniques
         if (raw && raw.techniques && Array.isArray(raw.techniques)) {
             allTechniques = raw.techniques;
         } else if (Array.isArray(raw)) {
-            // Если это просто массив (может быть массив записей JsonBox)
             allTechniques = raw.map(item => item.data ?? item);
         } else {
-            // База пуста — заполняем базовыми приёмами
+            allTechniques = [];
+        }
+
+        // Первый запуск — база пуста, заливаем базовые приёмы
+        if (allTechniques.length === 0) {
             allTechniques = [...DEFAULT_TECHNIQUES];
             await saveTechniques();
         }
 
-        // Если база пустая — заполняем
-        if (!Array.isArray(allTechniques) || allTechniques.length === 0) {
-            allTechniques = [...DEFAULT_TECHNIQUES];
-            await saveTechniques();
-        }
-
-        // Присваиваем id, если их нет
+        // Присваиваем id тем приёмам, у которых его нет
         allTechniques = allTechniques.map((t, i) => ({
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
@@ -72,16 +67,15 @@ async function loadTechniques() {
 
     } catch (e) {
         console.error("Ошибка загрузки:", e);
-        allTechniques = [...DEFAULT_TECHNIQUES];
-        allTechniques = allTechniques.map((t, i) => ({
+        allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
             id: Date.now() + i,
             ...t
         }));
-        alert("Не удалось загрузить приёмы с сервера. Используются стандартные.");
+        alert("Не удалось загрузить приёмы. Используются стандартные.");
     }
 }
 
-// Сохранение всех приёмов (перезапись целиком)
+// Сохранение всего массива приёмов (перезапись целиком)
 async function saveTechniques() {
     try {
         const response = await fetch(`${API_URL}?action=store`, {
@@ -99,7 +93,7 @@ async function saveTechniques() {
     }
 }
 
-// Добавление приёма (локально + сохранение)
+// Добавление приёма
 async function createTechnique(technique) {
     const newTech = {
         id: Date.now(),
@@ -172,8 +166,7 @@ function generateLessonStructure() {
 
     lastGenerated = selected;
     displayLessonStructure(selected);
-    const actions = document.getElementById("result-actions");
-    if (actions) actions.style.display = "flex";
+    document.getElementById("result-actions").style.display = "flex";
 }
 
 function displayLessonStructure(techniques) {
@@ -214,7 +207,7 @@ function copyStructure() {
     navigator.clipboard.writeText(text).then(() => {
         const btn = document.getElementById("copy-button");
         const old = btn.textContent;
-        btn.textContent = "Скопировано!";
+        btn.textContent = "✅ Скопировано!";
         setTimeout(() => { btn.textContent = old; }, 1500);
     }).catch(() => {
         prompt("Скопируйте текст вручную (Ctrl+C):", text);
@@ -257,6 +250,36 @@ function displayAllTechniques() {
     document.querySelectorAll(".delete-btn").forEach(btn => {
         btn.addEventListener("click", handleDeleteTechnique);
     });
+}
+
+// Переключатель: открыть / закрыть список
+function toggleAllTechniques() {
+    const container = document.getElementById("all-techniques-container");
+    const mainBtn = document.getElementById("show-all-button");
+    const closeWrapper = document.getElementById("close-list-wrapper");
+
+    if (container.style.display === "block") {
+        // Закрываем
+        container.style.display = "none";
+        closeWrapper.style.display = "none";
+        mainBtn.textContent = "Показать все приёмы";
+    } else {
+        // Открываем
+        displayAllTechniques();
+        closeWrapper.style.display = "block";
+        mainBtn.textContent = "Скрыть список";
+    }
+}
+
+// Принудительное закрытие (для верхней кнопки)
+function hideAllTechniques() {
+    const container = document.getElementById("all-techniques-container");
+    const mainBtn = document.getElementById("show-all-button");
+    const closeWrapper = document.getElementById("close-list-wrapper");
+
+    container.style.display = "none";
+    closeWrapper.style.display = "none";
+    mainBtn.textContent = "Показать все приёмы";
 }
 
 function setFilter(category) {
@@ -347,7 +370,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("generate-button").addEventListener("click", generateLessonStructure);
     document.getElementById("regenerate-button").addEventListener("click", generateLessonStructure);
     document.getElementById("copy-button").addEventListener("click", copyStructure);
-    document.getElementById("show-all-button").addEventListener("click", displayAllTechniques);
+    document.getElementById("show-all-button").addEventListener("click", toggleAllTechniques);
+    document.getElementById("hide-all-button").addEventListener("click", hideAllTechniques);
     document.getElementById("show-add-form-button").addEventListener("click", () => toggleAddForm(true));
     document.getElementById("cancel-add-button").addEventListener("click", () => toggleAddForm(false));
     document.getElementById("add-technique-form").addEventListener("submit", handleAddTechnique);

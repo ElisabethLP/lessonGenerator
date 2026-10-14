@@ -447,4 +447,37 @@ prefers-reduced-motion: reduce {
         animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
     }
+}/* ========== СЧЁТЧИК ПРИЁМОВ ========== */
+.techniques-count {
+    font-size: 0.9em;
+    color: #777;
+    margin: 0 0 15px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+.techniques-count.updated {
+    animation: countPulse 0.5s ease-out;
+}
+
+/* ========== АДАПТИВНЫЕ АНИМАЦИИ ========== */
+/* Минимальные анимации для слабых устройств */
+body.reduced-motion #lesson-structure-container li,
+body.reduced-motion #all-techniques-container li {
+    animation: fadeIn 0.15s ease-out;
+    animation-delay: 0s !important;
+}
+
+body.reduced-motion button {
+    transition: background-color 0.15s ease;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+body.reduced-motion #copy-button.copied {
+    animation: none;
+}
+
+body.reduced-motion .techniques-count.updated {
+    animation: none;
 }

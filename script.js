@@ -3,38 +3,76 @@ const API_KEY = "692034921bcfc838bcdf17cdb79377e9";
 const API_URL = "https://jsonbox.ru/api.php";
 const ADMIN_PASSWORD = "88888888";
 
+// Версия базового набора. Увеличьте (например, до "1.1"),
+// когда измените массив DEFAULT_TECHNIQUES ниже.
+const BASE_VERSION = "1.0";
+
 // ========== БАЗОВЫЕ ПРИЁМЫ ==========
-// Используются только при первом запуске, когда база JsonBox пуста
+// Используются только при первом запуске, когда база JsonBox пуста.
+// Флаг base: true позволяет отличать базовые приёмы от пользовательских
+// и обновлять их, не затрагивая то, что добавили пользователи.
 const DEFAULT_TECHNIQUES = [
-    { name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики." },
-    { name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал." },
-    { name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме на доске или в тетради." },
-    { name: "Работа в малых группах", category: "основной этап", description: "Учащиеся разбиваются на мини-группы для обсуждения." },
-    { name: "Обсуждение в парах", category: "основной этап", description: "Двое учащихся обсуждают тему или вопрос." },
-    { name: "Кейс-стади", category: "основной этап", description: "Анализ конкретной ситуации или проблемы." },
-    { name: "Дебаты", category: "основной этап", description: "Спор по теме с аргументами «за» и «против»." },
-    { name: "Мини-лекция", category: "основной этап", description: "Краткое изложение учителем основного материала." },
-    { name: "Ролевая игра", category: "основной этап", description: "Учащиеся играют роли для лучшего понимания ситуации." },
-    { name: "Решение задач", category: "закрепление", description: "Практическое применение знаний для решения задач." },
-    { name: "Лови ошибку", category: "закрепление", description: "Учитель намеренно допускает ошибку, ученики должны её найти." },
-    { name: "Презентация учащегося", category: "закрепление", description: "Доклад одного или нескольких учащихся по теме." },
-    { name: "Взаимопроверка", category: "закрепление", description: "Ученики проверяют работы друг друга по критериям." },
-    { name: "Зарядка для глаз", category: "физкультминутка", description: "Короткие упражнения для глаз, чтобы снять напряжение." },
-    { name: "Разминка на месте", category: "физкультминутка", description: "Простые движения: наклоны, потягивания, хлопки." },
-    { name: "Синквейн", category: "рефлексия", description: "Пятистишие по теме урока: существительное, прилагательные, глаголы, фраза, итог." },
-    { name: "Незаконченное предложение", category: "рефлексия", description: "Ученики продолжают фразу: «Сегодня я узнал…»." },
-    { name: "Дерево успеха", category: "рефлексия", description: "Ученики отмечают, что получилось хорошо, а что ещё нужно доработать." },
-    { name: "Плюс / минус / интересно", category: "рефлексия", description: "Ученики записывают, что понравилось, что нет и что удивило." },
-    { name: "Светофор", category: "рефлексия", description: "Зелёный — всё понятно, жёлтый — есть вопросы, красный — не понял." }
+    { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики." },
+    { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал." },
+    { base: true, name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме на доске или в тетради." },
+    { base: true, name: "Работа в малых группах", category: "основной этап", description: "Учащиеся разбиваются на мини-группы для обсуждения." },
+    { base: true, name: "Обсуждение в парах", category: "основной этап", description: "Двое учащихся обсуждают тему или вопрос." },
+    { base: true, name: "Кейс-стади", category: "основной этап", description: "Анализ конкретной ситуации или проблемы." },
+    { base: true, name: "Дебаты", category: "основной этап", description: "Спор по теме с аргументами «за» и «против»." },
+    { base: true, name: "Мини-лекция", category: "основной этап", description: "Краткое изложение учителем основного материала." },
+    { base: true, name: "Ролевая игра", category: "основной этап", description: "Учащиеся играют роли для лучшего понимания ситуации." },
+    { base: true, name: "Решение задач", category: "закрепление", description: "Практическое применение знаний для решения задач." },
+    { base: true, name: "Лови ошибку", category: "закрепление", description: "Учитель намеренно допускает ошибку, ученики должны её найти." },
+    { base: true, name: "Презентация учащегося", category: "закрепление", description: "Доклад одного или нескольких учащихся по теме." },
+    { base: true, name: "Взаимопроверка", category: "закрепление", description: "Ученики проверяют работы друг друга по критериям." },
+    { base: true, name: "Зарядка для глаз", category: "физкультминутка", description: "Короткие упражнения для глаз, чтобы снять напряжение." },
+    { base: true, name: "Разминка на месте", category: "физкультминутка", description: "Простые движения: наклоны, потягивания, хлопки." },
+    { base: true, name: "Синквейн", category: "рефлексия", description: "Пятистишие по теме урока: существительное, прилагательные, глаголы, фраза, итог." },
+    { base: true, name: "Незаконченное предложение", category: "рефлексия", description: "Ученики продолжают фразу: «Сегодня я узнал…»." },
+    { base: true, name: "Дерево успеха", category: "рефлексия", description: "Ученики отмечают, что получилось хорошо, а что ещё нужно доработать." },
+    { base: true, name: "Плюс / минус / интересно", category: "рефлексия", description: "Ученики записывают, что понравилось, что нет и что удивило." },
+    { base: true, name: "Светофор", category: "рефлексия", description: "Зелёный — всё понятно, жёлтый — есть вопросы, красный — не понял." }
 ];
 
 let allTechniques = [];
 let lastGenerated = [];
 let currentFilter = "all";
 
+// ========== РЕЗЕРВНАЯ КОПИЯ (localStorage) ==========
+
+function saveBackup() {
+    try {
+        localStorage.setItem("techniquesBackup", JSON.stringify(allTechniques));
+        localStorage.setItem("techniquesBackupTime", new Date().toISOString());
+    } catch (e) {
+        console.warn("Не удалось сохранить резервную копию:", e);
+    }
+}
+
+function restoreFromBackup() {
+    try {
+        const saved = localStorage.getItem("techniquesBackup");
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (e) {}
+    return null;
+}
+
+// ========== ВЕРСИЯ БАЗОВОГО НАБОРА ==========
+
+function shouldUpdateBase() {
+    const currentVersion = localStorage.getItem("baseVersion");
+    if (currentVersion !== BASE_VERSION) {
+        localStorage.setItem("baseVersion", BASE_VERSION);
+        return true;
+    }
+    return false;
+}
+
 // ========== ХРАНЕНИЕ (JsonBox) ==========
 
-// Загрузка всех приёмов
 async function loadTechniques() {
     try {
         const response = await fetch(`${API_URL}?action=get&api_key=${API_KEY}`);
@@ -53,8 +91,24 @@ async function loadTechniques() {
 
         // Первый запуск — база пуста, заливаем базовые приёмы
         if (allTechniques.length === 0) {
-            allTechniques = [...DEFAULT_TECHNIQUES];
+            allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
+                id: Date.now() + i,
+                ...t
+            }));
             await saveTechniques();
+        } else {
+            // База не пуста. Если изменилась версия базового набора —
+            // обновляем ТОЛЬКО базовые приёмы, не трогая пользовательские.
+            const hasBase = allTechniques.some(t => t.base === true);
+            if (hasBase && shouldUpdateBase()) {
+                const userTechniques = allTechniques.filter(t => t.base !== true);
+                const newBaseTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
+                    id: Date.now() + i,
+                    ...t
+                }));
+                allTechniques = [...newBaseTechniques, ...userTechniques];
+                await saveTechniques();
+            }
         }
 
         // Присваиваем id тем приёмам, у которых его нет
@@ -62,20 +116,27 @@ async function loadTechniques() {
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
             category: t.category || "основной этап",
-            description: t.description || ""
+            description: t.description || "",
+            base: t.base === true
         }));
 
     } catch (e) {
         console.error("Ошибка загрузки:", e);
-        allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
-            id: Date.now() + i,
-            ...t
-        }));
-        alert("Не удалось загрузить приёмы. Используются стандартные.");
+        const backup = restoreFromBackup();
+        if (backup) {
+            allTechniques = backup;
+            console.log("Использована резервная копия из localStorage");
+            alert("Сервер недоступен. Используется локальная копия.");
+        } else {
+            allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
+                id: Date.now() + i,
+                ...t
+            }));
+            alert("Не удалось загрузить приёмы. Используются стандартные.");
+        }
     }
 }
 
-// Сохранение всего массива приёмов (перезапись целиком)
 async function saveTechniques() {
     try {
         const response = await fetch(`${API_URL}?action=store`, {
@@ -87,26 +148,26 @@ async function saveTechniques() {
             })
         });
         if (!response.ok) throw new Error("Не удалось сохранить");
+        saveBackup();
     } catch (e) {
         console.error("Ошибка сохранения:", e);
-        alert("Не удалось сохранить данные. Проверьте интернет.");
+        alert("Не удалось сохранить данные. Локальная копия сохранена.");
     }
 }
 
-// Добавление приёма
 async function createTechnique(technique) {
     const newTech = {
         id: Date.now(),
         name: technique.name,
         category: technique.category,
-        description: technique.description || ""
+        description: technique.description || "",
+        base: false
     };
     allTechniques.push(newTech);
     await saveTechniques();
     return newTech;
 }
 
-// Удаление приёма по id
 async function deleteTechniqueById(id) {
     allTechniques = allTechniques.filter(t => String(t.id) !== String(id));
     await saveTechniques();
@@ -127,6 +188,29 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// Склонение слова «приём»
+function plural(n, forms) {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return forms[0];
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return forms[1];
+    return forms[2];
+}
+
+// Обновление счётчика приёмов
+function updateTechniquesCount() {
+    const el = document.getElementById("techniques-count");
+    if (!el) return;
+
+    const total = allTechniques.length;
+    const word = plural(total, ["приём", "приёма", "приёмов"]);
+    el.textContent = `В базе ${total} ${word}`;
+
+    el.classList.remove("updated");
+    void el.offsetWidth;
+    el.classList.add("updated");
+}
+
 // ========== ГЕНЕРАЦИЯ ==========
 function generateLessonStructure() {
     if (allTechniques.length === 0) {
@@ -138,7 +222,6 @@ function generateLessonStructure() {
     const selected = [];
     const usedIds = new Set();
 
-    // Берём по одному из ключевых категорий
     categories.forEach(cat => {
         const pool = allTechniques.filter(t => t.category === cat && !usedIds.has(t.id));
         if (pool.length > 0) {
@@ -148,7 +231,6 @@ function generateLessonStructure() {
         }
     });
 
-    // Иногда добавляем физкультминутку
     if (Math.random() < 0.5) {
         const fiz = allTechniques.filter(t => t.category === "физкультминутка" && !usedIds.has(t.id));
         if (fiz.length > 0) {
@@ -156,7 +238,6 @@ function generateLessonStructure() {
         }
     }
 
-    // Если мало — добираем случайными
     if (selected.length < 3) {
         const rest = shuffleArray(allTechniques.filter(t => !usedIds.has(t.id)));
         while (selected.length < 3 && rest.length > 0) {
@@ -208,7 +289,11 @@ function copyStructure() {
         const btn = document.getElementById("copy-button");
         const old = btn.textContent;
         btn.textContent = "✅ Скопировано!";
-        setTimeout(() => { btn.textContent = old; }, 1500);
+        btn.classList.add("copied");
+        setTimeout(() => {
+            btn.textContent = old;
+            btn.classList.remove("copied");
+        }, 1500);
     }).catch(() => {
         prompt("Скопируйте текст вручную (Ctrl+C):", text);
     });
@@ -239,7 +324,6 @@ function displayAllTechniques() {
             <strong>${index + 1}. ${tech.name}</strong>
 
             ${tech.description || "Нет описания"}
-            
 
             <button class="delete-btn" data-id="${tech.id}">Удалить</button>
         `;
@@ -252,26 +336,22 @@ function displayAllTechniques() {
     });
 }
 
-// Переключатель: открыть / закрыть список
 function toggleAllTechniques() {
     const container = document.getElementById("all-techniques-container");
     const mainBtn = document.getElementById("show-all-button");
     const closeWrapper = document.getElementById("close-list-wrapper");
 
     if (container.style.display === "block") {
-        // Закрываем
         container.style.display = "none";
         closeWrapper.style.display = "none";
         mainBtn.textContent = "Показать все приёмы";
     } else {
-        // Открываем
         displayAllTechniques();
         closeWrapper.style.display = "block";
         mainBtn.textContent = "Скрыть список";
     }
 }
 
-// Принудительное закрытие (для верхней кнопки)
 function hideAllTechniques() {
     const container = document.getElementById("all-techniques-container");
     const mainBtn = document.getElementById("show-all-button");
@@ -292,7 +372,7 @@ function setFilter(category) {
     }
 }
 
-// ========== УДАЛЕНИЕ ==========
+// ========== УДАЛЕНИЕ (пароль + подтверждение) ==========
 async function handleDeleteTechnique(event) {
     const password = prompt("Введите пароль администратора:");
     if (password !== ADMIN_PASSWORD) {
@@ -308,6 +388,7 @@ async function handleDeleteTechnique(event) {
 
     try {
         await deleteTechniqueById(id);
+        updateTechniquesCount();
         displayAllTechniques();
         alert("Приём удалён.");
     } catch (e) {
@@ -316,7 +397,7 @@ async function handleDeleteTechnique(event) {
     }
 }
 
-// ========== ДОБАВЛЕНИЕ ==========
+// ========== ДОБАВЛЕНИЕ (проверка пустых полей) ==========
 function toggleAddForm(show) {
     const form = document.getElementById("add-technique-form");
     const btn = document.getElementById("show-add-form-button");
@@ -351,6 +432,7 @@ async function handleAddTechnique(event) {
 
     try {
         await createTechnique({ name, category, description });
+        updateTechniquesCount();
         toggleAddForm(false);
         alert("Приём добавлен!");
 
@@ -363,9 +445,36 @@ async function handleAddTechnique(event) {
     }
 }
 
+// ========== ОПРЕДЕЛЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ ==========
+function isLowPowerDevice() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+    if (window.matchMedia("(prefers-reduced-data: reduce)").matches) return true;
+
+    const cores = navigator.hardwareConcurrency || 4;
+    if (cores <= 2) return true;
+
+    const memory = navigator.deviceMemory || 4;
+    if (memory <= 2) return true;
+
+    if (window.innerWidth < 360) return true;
+
+    const conn = navigator.connection;
+    if (conn) {
+        if (conn.saveData) return true;
+        if (["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return true;
+    }
+
+    return false;
+}
+
 // ========== ЗАПУСК ==========
 document.addEventListener("DOMContentLoaded", async () => {
+    if (isLowPowerDevice()) {
+        document.body.classList.add("reduced-motion");
+    }
+
     await loadTechniques();
+    updateTechniquesCount();
 
     document.getElementById("generate-button").addEventListener("click", generateLessonStructure);
     document.getElementById("regenerate-button").addEventListener("click", generateLessonStructure);

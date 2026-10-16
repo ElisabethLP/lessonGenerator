@@ -1,6 +1,5 @@
 // ========== НАСТРОЙКИ ==========
-const API_KEY = "692034921bcfc838bcdf17cdb79377e9";
-const API_URL = "https://jsonbox.ru/api.php";
+const API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
 const ADMIN_PASSWORD = "88888888";
 
 // Версия базового набора. Увеличьте (например, до "1.1"),
@@ -8,7 +7,6 @@ const ADMIN_PASSWORD = "88888888";
 const BASE_VERSION = "1.0";
 
 // ========== БАЗОВЫЕ ПРИЁМЫ ==========
-// Используются только при первом запуске, когда база JsonBox пуста.
 // Флаг base: true позволяет отличать базовые приёмы от пользовательских
 // и обновлять их, не затрагивая то, что добавили пользователи.
 const DEFAULT_TECHNIQUES = [
@@ -39,7 +37,6 @@ let lastGenerated = [];
 let currentFilter = "all";
 
 // ========== РЕЗЕРВНАЯ КОПИЯ (localStorage) ==========
-
 function saveBackup() {
     try {
         localStorage.setItem("techniquesBackup", JSON.stringify(allTechniques));
@@ -61,7 +58,6 @@ function restoreFromBackup() {
 }
 
 // ========== ВЕРСИЯ БАЗОВОГО НАБОРА ==========
-
 function shouldUpdateBase() {
     const currentVersion = localStorage.getItem("baseVersion");
     if (currentVersion !== BASE_VERSION) {
@@ -71,47 +67,35 @@ function shouldUpdateBase() {
     return false;
 }
 
-// ========== ХРАНЕНИЕ (JsonBox) ==========
+// ========== ХРАНЕНИЕ (MockAPI) ==========
 
+// Загрузка всех приёмов
 async function loadTechniques() {
     try {
-        const response = await fetch(`${API_URL}?action=get&api_key=${API_KEY}`);
+        const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Не удалось загрузить приёмы");
-
-        const data = await response.json();
-        let raw = data.data ?? data;
-
-        if (raw && raw.techniques && Array.isArray(raw.techniques)) {
-            allTechniques = raw.techniques;
-        } else if (Array.isArray(raw)) {
-            allTechniques = raw.map(item => item.data ?? item);
-        } else {
-            allTechniques = [];
-        }
+        allTechniques = await response.json();
 
         // Первый запуск — база пуста, заливаем базовые приёмы
-        if (allTechniques.length === 0) {
-            allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
-                id: Date.now() + i,
-                ...t
-            }));
-            await saveTechniques();
+        if (!Array.isArray(allTechniques) || allTechniques.length === 0) {
+            await seedDefaultTechniques();
         } else {
-            // База не пуста. Если изменилась версия базового набора —
-            // обновляем ТОЛЬКО базовые приёмы, не трогая пользовательские.
+            // Если изменилась версия базового набора —
+            // обновляем ТОЛЬКО базовые, не трогая пользовательские.
             const hasBase = allTechniques.some(t => t.base === true);
             if (hasBase && shouldUpdateBase()) {
                 const userTechniques = allTechniques.filter(t => t.base !== true);
-                const newBaseTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
+                const newBase = DEFAULT_TECHNIQUES.map((t, i) => ({
                     id: Date.now() + i,
                     ...t
                 }));
-                allTechniques = [...newBaseTechniques, ...userTechniques];
-                await saveTechniques();
+                allTechniques = [...newBase, ...userTechniques];
+                // Перезаписываем базу: удаляем все старые и POST-им новые
+                await rewriteAllTechniques();
             }
         }
 
-        // Присваиваем id тем приёмам, у которых его нет
+        // Присваиваем id тем, у которых его нет
         allTechniques = allTechniques.map((t, i) => ({
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
@@ -125,7 +109,6 @@ async function loadTechniques() {
         const backup = restoreFromBackup();
         if (backup) {
             allTechniques = backup;
-            console.log("Использована резервная копия из localStorage");
             alert("Сервер недоступен. Используется локальная копия.");
         } else {
             allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
@@ -137,40 +120,63 @@ async function loadTechniques() {
     }
 }
 
-async function saveTechniques() {
-    try {
-        const response = await fetch(`${API_URL}?action=store`, {
+// Первичное наполнение базы
+async function seedDefaultTechniques() {
+    for (const t of DEFAULT_TECHNIQUES) {
+        await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                api_key: API_KEY,
-                data: { techniques: allTechniques }
-            })
+            body: JSON.stringify(t)
         });
-        if (!response.ok) throw new Error("Не удалось сохранить");
-        saveBackup();
-    } catch (e) {
-        console.error("Ошибка сохранения:", e);
-        alert("Не удалось сохранить данные. Локальная копия сохранена.");
     }
+    const response = await fetch(API_URL);
+    allTechniques = await response.json();
 }
 
+// Перезапись всей базы (для обновления базового набора)
+async function rewriteAllTechniques() {
+    // Удаляем всё старое
+    const old = await fetch(API_URL).then(r => r.json());
+    for (const item of old) {
+        await fetch(`${API_URL}/${item.id}`, { method: "DELETE" });
+    }
+    // Заливаем новое
+    for (const t of allTechniques) {
+        await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(t)
+        });
+    }
+    const response = await fetch(API_URL);
+    allTechniques = await response.json();
+}
+
+// Добавление приёма
 async function createTechnique(technique) {
-    const newTech = {
-        id: Date.now(),
-        name: technique.name,
-        category: technique.category,
-        description: technique.description || "",
-        base: false
-    };
-    allTechniques.push(newTech);
-    await saveTechniques();
-    return newTech;
+    const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: technique.name,
+            category: technique.category,
+            description: technique.description || "",
+            base: false
+        })
+    });
+    if (!response.ok) throw new Error("Не удалось сохранить");
+    const created = await response.json();
+    saveBackup();
+    return created;
 }
 
+// Удаление приёма по id
 async function deleteTechniqueById(id) {
-    allTechniques = allTechniques.filter(t => String(t.id) !== String(id));
-    await saveTechniques();
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
+    if (!response.ok) throw new Error("Не удалось удалить");
+    saveBackup();
 }
 
 // ========== УТИЛИТЫ ==========
@@ -188,7 +194,6 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Склонение слова «приём»
 function plural(n, forms) {
     const mod10 = n % 10;
     const mod100 = n % 100;
@@ -197,15 +202,12 @@ function plural(n, forms) {
     return forms[2];
 }
 
-// Обновление счётчика приёмов
 function updateTechniquesCount() {
     const el = document.getElementById("techniques-count");
     if (!el) return;
-
     const total = allTechniques.length;
     const word = plural(total, ["приём", "приёма", "приёмов"]);
     el.textContent = `В базе ${total} ${word}`;
-
     el.classList.remove("updated");
     void el.offsetWidth;
     el.classList.add("updated");
@@ -253,20 +255,16 @@ function generateLessonStructure() {
 function displayLessonStructure(techniques) {
     const container = document.getElementById("lesson-structure-container");
     container.innerHTML = "";
-
     if (!techniques.length) {
         container.innerHTML = "<p>Приёмы не выбраны.</p>";
         return;
     }
-
     const ul = document.createElement("ul");
     techniques.forEach((tech, index) => {
         const li = document.createElement("li");
         li.innerHTML = `
             <span class="category-tag">${capitalize(tech.category)}</span>
-
             <strong>${index + 1}. ${tech.name}</strong>
-
             ${tech.description || "Нет описания"}
         `;
         ul.appendChild(li);
@@ -280,7 +278,6 @@ function copyStructure() {
         alert("Сначала создайте структуру урока.");
         return;
     }
-
     const text = lastGenerated
         .map((t, i) => `${i + 1}. [${capitalize(t.category)}] ${t.name} — ${t.description || "без описания"}`)
         .join("\n");
@@ -320,11 +317,8 @@ function displayAllTechniques() {
         const li = document.createElement("li");
         li.innerHTML = `
             <span class="category-tag">${capitalize(tech.category)}</span>
-
             <strong>${index + 1}. ${tech.name}</strong>
-
             ${tech.description || "Нет описания"}
-
             <button class="delete-btn" data-id="${tech.id}">Удалить</button>
         `;
         ul.appendChild(li);
@@ -356,7 +350,6 @@ function hideAllTechniques() {
     const container = document.getElementById("all-techniques-container");
     const mainBtn = document.getElementById("show-all-button");
     const closeWrapper = document.getElementById("close-list-wrapper");
-
     container.style.display = "none";
     closeWrapper.style.display = "none";
     mainBtn.textContent = "Показать все приёмы";
@@ -388,6 +381,7 @@ async function handleDeleteTechnique(event) {
 
     try {
         await deleteTechniqueById(id);
+        allTechniques = allTechniques.filter(t => String(t.id) !== String(id));
         updateTechniquesCount();
         displayAllTechniques();
         alert("Приём удалён.");
@@ -425,13 +419,13 @@ async function handleAddTechnique(event) {
         alert("Введите название приёма.");
         return;
     }
-    if (!category) {
-        alert("Выберите категорию.");
+    if (!category) {alert("Выберите категорию.");
         return;
     }
 
     try {
-        await createTechnique({ name, category, description });
+        const created = await createTechnique({ name, category, description });
+        allTechniques.push(created);
         updateTechniquesCount();
         toggleAddForm(false);
         alert("Приём добавлен!");
@@ -463,7 +457,6 @@ function isLowPowerDevice() {
         if (conn.saveData) return true;
         if (["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return true;
     }
-
     return false;
 }
 

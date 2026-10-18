@@ -1,14 +1,9 @@
 // ========== НАСТРОЙКИ ==========
 const API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
 const ADMIN_PASSWORD = "88888888";
-
-// Версия базового набора. Увеличьте (например, до "1.1"),
-// когда измените массив DEFAULT_TECHNIQUES ниже.
 const BASE_VERSION = "1.0";
 
 // ========== БАЗОВЫЕ ПРИЁМЫ ==========
-// Флаг base: true позволяет отличать базовые приёмы от пользовательских
-// и обновлять их, не затрагивая то, что добавили пользователи.
 const DEFAULT_TECHNIQUES = [
     { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики." },
     { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал." },
@@ -35,6 +30,47 @@ const DEFAULT_TECHNIQUES = [
 let allTechniques = [];
 let lastGenerated = [];
 let currentFilter = "all";
+
+// ========== УВЕДОМЛЕНИЯ (ТОСТЫ) ==========
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    
+    container.appendChild(toast);
+    
+    // Автоматическое скрытие через 3.5 секунды
+    setTimeout(() => {
+        toast.classList.add("toast-hide");
+        toast.addEventListener("animationend", () => {
+            toast.remove();
+        });
+    }, 3500);
+}
+
+// ========== ТЁМНАЯ / СВЕТЛАЯ ТЕМА ==========
+function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const btn = document.getElementById("theme-toggle");
+    if (btn) {
+        btn.textContent = theme === "dark" ? "☀️" : "🌙";
+    }
+    localStorage.setItem("theme", theme);
+}function initTheme() {
+    const saved = localStorage.getItem("theme");
+    if (saved) {
+        applyTheme(saved);
+    } else {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        applyTheme(prefersDark ? "dark" : "light");
+    }
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute("data-theme");
+    applyTheme(current === "dark" ? "light" : "dark");
+}
 
 // ========== РЕЗЕРВНАЯ КОПИЯ (localStorage) ==========
 function saveBackup() {
@@ -68,20 +104,18 @@ function shouldUpdateBase() {
 }
 
 // ========== ХРАНЕНИЕ (MockAPI) ==========
-
-// Загрузка всех приёмов
 async function loadTechniques() {
+    const loader = document.getElementById("loader");
+    if (loader) loader.style.display = "flex"; // Показываем загрузку
+
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Не удалось загрузить приёмы");
         allTechniques = await response.json();
 
-        // Первый запуск — база пуста, заливаем базовые приёмы
         if (!Array.isArray(allTechniques) || allTechniques.length === 0) {
             await seedDefaultTechniques();
         } else {
-            // Если изменилась версия базового набора —
-            // обновляем ТОЛЬКО базовые, не трогая пользовательские.
             const hasBase = allTechniques.some(t => t.base === true);
             if (hasBase && shouldUpdateBase()) {
                 const userTechniques = allTechniques.filter(t => t.base !== true);
@@ -90,12 +124,10 @@ async function loadTechniques() {
                     ...t
                 }));
                 allTechniques = [...newBase, ...userTechniques];
-                // Перезаписываем базу: удаляем все старые и POST-им новые
                 await rewriteAllTechniques();
             }
         }
 
-        // Присваиваем id тем, у которых его нет
         allTechniques = allTechniques.map((t, i) => ({
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
@@ -109,18 +141,19 @@ async function loadTechniques() {
         const backup = restoreFromBackup();
         if (backup) {
             allTechniques = backup;
-            alert("Сервер недоступен. Используется локальная копия.");
+            showToast("Сервер недоступен. Используется локальная копия.", "error");
         } else {
             allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({
                 id: Date.now() + i,
                 ...t
             }));
-            alert("Не удалось загрузить приёмы. Используются стандартные.");
+            showToast("Не удалось загрузить приёмы. Используются стандартные.", "error");
         }
+    } finally {
+        if (loader) loader.style.display = "none"; // Скрываем загрузку
     }
 }
 
-// Первичное наполнение базы
 async function seedDefaultTechniques() {
     for (const t of DEFAULT_TECHNIQUES) {
         await fetch(API_URL, {
@@ -133,14 +166,11 @@ async function seedDefaultTechniques() {
     allTechniques = await response.json();
 }
 
-// Перезапись всей базы (для обновления базового набора)
 async function rewriteAllTechniques() {
-    // Удаляем всё старое
     const old = await fetch(API_URL).then(r => r.json());
     for (const item of old) {
         await fetch(`${API_URL}/${item.id}`, { method: "DELETE" });
     }
-    // Заливаем новое
     for (const t of allTechniques) {
         await fetch(API_URL, {
             method: "POST",
@@ -152,7 +182,6 @@ async function rewriteAllTechniques() {
     allTechniques = await response.json();
 }
 
-// Добавление приёма
 async function createTechnique(technique) {
     const response = await fetch(API_URL, {
         method: "POST",
@@ -170,7 +199,6 @@ async function createTechnique(technique) {
     return created;
 }
 
-// Удаление приёма по id
 async function deleteTechniqueById(id) {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "DELETE"
@@ -216,7 +244,7 @@ function updateTechniquesCount() {
 // ========== ГЕНЕРАЦИЯ ==========
 function generateLessonStructure() {
     if (allTechniques.length === 0) {
-        alert("Список приёмов пуст.");
+        showToast("Список приёмов пуст.", "error");
         return;
     }
 
@@ -275,11 +303,10 @@ function displayLessonStructure(techniques) {
 // ========== КОПИРОВАНИЕ ==========
 function copyStructure() {
     if (!lastGenerated.length) {
-        alert("Сначала создайте структуру урока.");
+        showToast("Сначала создайте структуру урока.", "error");
         return;
     }
-    const text = lastGenerated
-        .map((t, i) => `${i + 1}. [${capitalize(t.category)}] ${t.name} — ${t.description || "без описания"}`)
+    const text = lastGenerated.map((t, i) => `${i + 1}. [${capitalize(t.category)}] ${t.name} — ${t.description || "без описания"}`)
         .join("\n");
 
     navigator.clipboard.writeText(text).then(() => {
@@ -287,6 +314,9 @@ function copyStructure() {
         const old = btn.textContent;
         btn.textContent = "✅ Скопировано!";
         btn.classList.add("copied");
+        
+        showToast("Структура урока скопирована!");
+        
         setTimeout(() => {
             btn.textContent = old;
             btn.classList.remove("copied");
@@ -365,11 +395,11 @@ function setFilter(category) {
     }
 }
 
-// ========== УДАЛЕНИЕ (пароль + подтверждение) ==========
+// ========== УДАЛЕНИЕ ==========
 async function handleDeleteTechnique(event) {
     const password = prompt("Введите пароль администратора:");
     if (password !== ADMIN_PASSWORD) {
-        alert("Неверный пароль.");
+        showToast("Неверный пароль.", "error");
         return;
     }
 
@@ -384,14 +414,14 @@ async function handleDeleteTechnique(event) {
         allTechniques = allTechniques.filter(t => String(t.id) !== String(id));
         updateTechniquesCount();
         displayAllTechniques();
-        alert("Приём удалён.");
+        showToast("Приём удалён.");
     } catch (e) {
         console.error("Ошибка удаления:", e);
-        alert("Не удалось удалить приём.");
+        showToast("Не удалось удалить приём.", "error");
     }
 }
 
-// ========== ДОБАВЛЕНИЕ (проверка пустых полей) ==========
+// ========== ДОБАВЛЕНИЕ ==========
 function toggleAddForm(show) {
     const form = document.getElementById("add-technique-form");
     const btn = document.getElementById("show-add-form-button");
@@ -416,10 +446,11 @@ async function handleAddTechnique(event) {
     const description = document.getElementById("technique-description").value.trim();
 
     if (!name) {
-        alert("Введите название приёма.");
+        showToast("Введите название приёма.", "error");
         return;
     }
-    if (!category) {alert("Выберите категорию.");
+    if (!category) {
+        showToast("Выберите категорию.", "error");
         return;
     }
 
@@ -428,14 +459,14 @@ async function handleAddTechnique(event) {
         allTechniques.push(created);
         updateTechniquesCount();
         toggleAddForm(false);
-        alert("Приём добавлен!");
+        showToast("Приём добавлен!");
 
         if (document.getElementById("all-techniques-container").style.display === "block") {
             displayAllTechniques();
         }
     } catch (e) {
         console.error("Ошибка добавления:", e);
-        alert("Не удалось сохранить приём.");
+        showToast("Не удалось сохранить приём.", "error");
     }
 }
 
@@ -462,13 +493,19 @@ function isLowPowerDevice() {
 
 // ========== ЗАПУСК ==========
 document.addEventListener("DOMContentLoaded", async () => {
+    // Инициализация темы
+    initTheme();
+    document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+
     if (isLowPowerDevice()) {
         document.body.classList.add("reduced-motion");
     }
 
+    // Загрузка данных (с индикатором)
     await loadTechniques();
     updateTechniquesCount();
 
+    // Обработчики событий
     document.getElementById("generate-button").addEventListener("click", generateLessonStructure);
     document.getElementById("regenerate-button").addEventListener("click", generateLessonStructure);
     document.getElementById("copy-button").addEventListener("click", copyStructure);

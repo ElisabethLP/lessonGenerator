@@ -87,24 +87,36 @@ function restoreFromBackup() {
 // ========== ЗАГРУЗКА (СНАЧАЛА ИЗ ПАМЯТИ, ПОТОМ ИЗ СЕТИ) ==========
 async function loadTechniques() {
     var loader = document.getElementById("loader");
-    if (loader) loader.style.display = "flex";
-
-    // 1. Мгновенная загрузка из памяти телефона
+    
+    // 1. МГНОВЕННАЯ ЗАГРУЗКА ИЗ ПАМЯТИ ТЕЛЕФОНА
     var localData = restoreFromBackup();
-    if (localData) {
+    if (localData && localData.length > 0) {
         allTechniques = localData;
         updateTechniquesCount();
-        displayAllTechniques();
-        if (loader) loader.style.display = "none";
+        // Если список приёмов открыт, обновляем его
+        if (document.getElementById("all-techniques-container").style.display === "block") {
+            displayAllTechniques();
+        }
+        if (loader) loader.style.display = "none"; // Прячем спиннер, данные уже есть
+    } else {
+        if (loader) loader.style.display = "flex"; // Показываем спиннер, если памяти нет
     }
 
-    // 2. Обновление из сети в фоне
+    // 2. ТИХОЕ ОБНОВЛЕНИЕ ИЗ СЕТИ В ФОНЕ
     try {
-        var response = await fetch(API_URL);
-        if (!response.ok) throw new Error("Ошибка сети");
+        // Добавляем тайм-аут 4 секунды, чтобы не ждать вечно
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function() { controller.abort(); }, 4000);
+
+        var response = await fetch(API_URL, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) throw new Error("Сервер занят или лимит запросов");
+
         var loaded = await response.json();
 
         if (Array.isArray(loaded) && loaded.length > 0) {
+            // Обновляем данные
             allTechniques = loaded.map(function(t, i) {
                 return {
                     id: t.id || (Date.now() + i),
@@ -118,23 +130,28 @@ async function loadTechniques() {
                     votes: Number(t.votes) || 0
                 };
             });
-            saveBackup();
+
+            saveBackup(); // Сохраняем свежую копию в память
             updateTechniquesCount();
+            
             if (document.getElementById("all-techniques-container").style.display === "block") {
                 displayAllTechniques();
             }
         }
     } catch (e) {
-        console.warn("Сеть недоступна, работаем из памяти");
-        if (allTechniques.length === 0) {
-            allTechniques = DEFAULT_TECHNIQUES;
+        console.warn("Фоновое обновление не удалось (лимит MockAPI или нет сети). Работаем из памяти.");
+        // Если памяти не было и сеть упала — грузим стандартные приёмы
+        if (!allTechniques || allTechniques.length === 0) {
+            allTechniques = DEFAULT_TECHNIQUES.map(function(t, i) {
+                return { id: Date.now() + i, base: true, name: t.name, category: t.category, description: t.description, details: t.details, link: t.link, rating: 0, votes: 0 };
+            });
             updateTechniquesCount();
+            showToast("Нет сети. Загружены стандартные приёмы.", "error");
         }
     } finally {
         if (loader) loader.style.display = "none";
     }
 }
-
 // ========== ГЕНЕРАЦИЯ ==========
 function getWeightedRandomTechnique(pool) {
     var getWeight = function(tech) {

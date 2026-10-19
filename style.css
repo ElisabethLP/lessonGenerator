@@ -745,3 +745,99 @@ max-width: 600px {
     margin-bottom: 4px;
     font-size: 0.95em;
 }
+/* ========== СИСТЕМА РЕЙТИНГА ========== */
+.tech-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.tech-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+/* Красивые звездочки */
+.stars {
+    display: inline-flex;
+    gap: 2px;
+    font-size: 1.2em;
+    color: #ccc;
+    cursor: pointer;
+    user-select: none;
+    margin-top: 5px;
+}
+
+[data-theme="dark"] .stars {
+    color: #555;
+}
+
+.stars .star {
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+/* Подсветка при наведении и выборе */
+.stars .star:hover,
+.stars .star.hovered,
+.stars .star.active {
+    color: #f0ad4e !important;
+}
+
+.stars:hover .star {
+    transform: scale(1.1);
+}
+
+.rating-badge {
+    font-size: 0.85em;
+    color: var(--footer-text);
+    background: var(--item-bg);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* Скрытая кнопка удаления */
+.tech-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+#all-techniques-container li:hover .tech-actions {
+    opacity: 1;
+}
+
+/* На телефонах кнопка удаления всегда видна */
+@media (max-width: 600px) {
+    .tech-actions {
+        opacity: 1;
+    }
+}
+
+.delete-btn {
+    background: transparent;
+    color: #dc3545;
+    border: 1px solid transparent;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* Активная кнопка сортировки */
+.sort-btn.active {
+    background: #f0ad4e;
+    color: white;
+}

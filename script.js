@@ -1,36 +1,36 @@
 // ========== НАСТРОЙКИ ==========
 const API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
 const ADMIN_PASSWORD = "88888888";
-const BASE_VERSION = "1.2"; // Подняли версию из-за новых полей
+const BASE_VERSION = "1.3"; // Подняли версию
 
 // ========== БАЗОВЫЕ ПРИЁМЫ ==========
-// (Оставил ваши 20 приёмов. Если у каких-то есть ссылки, можно добавить их сюда)
 const DEFAULT_TECHNIQUES = [
-    { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики.", details: "Учитель задает тему. Ученики по очереди называют идеи. Главное правило: никакой критики. Все идеи записываются на доску.", link: "" },
-    { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал.", details: "Фронтальный опрос. Учитель задает вопрос, ученики поднимают руки. Можно использовать метод 'Светофор' для быстрой проверки.", link: "" },
-    { base: true, name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме на доске или в тетради.", details: "В центре доски пишется ключевое слово. Вокруг рисуются круги с ассоциациями, которые соединяются линиями.", link: "" },
-    { base: true, name: "Работа в малых группах", category: "основной этап", description: "Учащиеся разбиваются на мини-группы для обсуждения.", details: "", link: "" },
-    { base: true, name: "Обсуждение в парах", category: "основной этап", description: "Двое учащихся обсуждают тему или вопрос.", details: "", link: "" },
-    { base: true, name: "Кейс-стади", category: "основной этап", description: "Анализ конкретной ситуации или проблемы.", details: "", link: "" },
-    { base: true, name: "Дебаты", category: "основной этап", description: "Спор по теме с аргументами «за» и «против».", details: "", link: "" },
-    { base: true, name: "Мини-лекция", category: "основной этап", description: "Краткое изложение учителем основного материала.", details: "", link: "" },
-    { base: true, name: "Ролевая игра", category: "основной этап", description: "Учащиеся играют роли для лучшего понимания ситуации.", details: "", link: "" },
-    { base: true, name: "Решение задач", category: "закрепление", description: "Практическое применение знаний для решения задач.", details: "", link: "" },
-    { base: true, name: "Лови ошибку", category: "закрепление", description: "Учитель намеренно допускает ошибку, ученики должны её найти.", details: "", link: "" },
-    { base: true, name: "Презентация учащегося", category: "закрепление", description: "Доклад одного или нескольких учащихся по теме.", details: "", link: "" },
-    { base: true, name: "Взаимопроверка", category: "закрепление", description: "Ученики проверяют работы друг друга по критериям.", details: "", link: "" },
-    { base: true, name: "Зарядка для глаз", category: "физкультминутка", description: "Короткие упражнения для глаз, чтобы снять напряжение.", details: "", link: "" },
-    { base: true, name: "Разминка на месте", category: "физкультминутка", description: "Простые движения: наклоны, потягивания, хлопки.", details: "", link: "" },
-    { base: true, name: "Синквейн", category: "рефлексия", description: "Пятистишие по теме урока: существительное, прилагательные, глаголы, фраза, итог.", details: "", link: "" },
-    { base: true, name: "Незаконченное предложение", category: "рефлексия", description: "Ученики продолжают фразу: «Сегодня я узнал…».", details: "", link: "" },
-    { base: true, name: "Дерево успеха", category: "рефлексия", description: "Ученики отмечают, что получилось хорошо, а что ещё нужно доработать.", details: "", link: "" },
-    { base: true, name: "Плюс / минус / интересно", category: "рефлексия", description: "Ученики записывают, что понравилось, что нет и что удивило.", details: "", link: "" },
-    { base: true, name: "Светофор", category: "рефлексия", description: "Зелёный — всё понятно, жёлтый — есть вопросы, красный — не понял.", details: "", link: "" }
+    { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики.", details: "Учитель задает тему. Ученики по очереди называют любые идеи...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме.", details: "Фронтальный опрос...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме.", details: "В центре доски пишется ключевое слово...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Работа в малых группах", category: "основной этап", description: "Учащиеся разбиваются на мини-группы.", details: "Класс делится на группы по 3-4 человека...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Обсуждение в парах", category: "основной этап", description: "Двое учащихся обсуждают тему.", details: "Ученики поворачиваются друг к другу...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Кейс-стади", category: "основной этап", description: "Анализ конкретной ситуации.", details: "Учитель раздает группам описание ситуации...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Дебаты", category: "основной этап", description: "Спор по теме с аргументами.", details: "Класс делится на две команды...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Мини-лекция", category: "основной этап", description: "Краткое изложение материала.", details: "Учитель объясняет новую тему 10-15 минут...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Ролевая игра", category: "основной этап", description: "Учащиеся играют роли.", details: "Учитель раздает карточки с ролями...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Решение задач", category: "закрепление", description: "Практическое применение знаний.", details: "Ученики самостоятельно решают задания...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Лови ошибку", category: "закрепление", description: "Ученики ищут ошибку в тексте.", details: "Учитель пишет текст с ошибками...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Презентация учащегося", category: "закрепление", description: "Доклад учащегося по теме.", details: "Ученик готовит выступление на 3-5 минут...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Взаимопроверка", category: "закрепление", description: "Ученики проверяют работы друг друга.", details: "Ученики обмениваются тетрадями...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Зарядка для глаз", category: "физкультминутка", description: "Упражнения для глаз.", details: "Крепко зажмурить глаза, затем открыть...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Разминка на месте", category: "физкультминутка", description: "Наклоны, потягивания, хлопки.", details: "Учитель командует: 'Встали, потянулись...'", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Синквейн", category: "рефлексия", description: "Пятистишие по теме урока.", details: "1 строка — 1 существительное...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Незаконченное предложение", category: "рефлексия", description: "Ученики продолжают фразу.", details: "Учитель предлагает фразы: 'Сегодня я узнал...'", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Дерево успеха", category: "рефлексия", description: "Ученики отмечают успехи.", details: "На доске рисуется дерево. Ученики клеят стикеры...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Плюс / минус / интересно", category: "рефлексия", description: "Записывают плюсы и минусы.", details: "Таблица из трех колонок...", link: "", rating: 0, votes: 0 },
+    { base: true, name: "Светофор", category: "рефлексия", description: "Оценка понимания темы.", details: "Карточки трех цветов...", link: "", rating: 0, votes: 0 }
 ];
 
 let allTechniques = [];
 let lastGenerated = [];
 let currentFilter = "all";
+let sortByRating = false; // Новый флаг для сортировки
 
 // ========== УВЕДОМЛЕНИЯ ==========
 function showToast(message, type = "success") {
@@ -101,29 +101,33 @@ async function loadTechniques() {
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Не удалось загрузить");
-        allTechniques = await response.json();
+        let loaded = await response.json();
 
-        if (!Array.isArray(allTechniques) || allTechniques.length === 0) {
+        if (!Array.isArray(loaded) || loaded.length === 0) {
             await seedDefaultTechniques();
+            return;
         } else {
-            const hasBase = allTechniques.some(t => t.base === true);
+            const hasBase = loaded.some(t => t.base === true);
             if (hasBase && shouldUpdateBase()) {
-                const userTechniques = allTechniques.filter(t => t.base !== true);
+                const userTechniques = loaded.filter(t => t.base !== true);
                 const newBase = DEFAULT_TECHNIQUES.map((t, i) => ({ id: Date.now() + i, ...t }));
                 allTechniques = [...newBase, ...userTechniques];
                 await rewriteAllTechniques();
+                return;
             }
         }
 
-        // Приводим данные к единому виду (добавляем details и link)
-        allTechniques = allTechniques.map((t, i) => ({
+        // Приводим данные к единому виду, добавляем рейтинг старым приёмам
+        allTechniques = loaded.map((t, i) => ({
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
             category: t.category || "основной этап",
             description: t.description || "",
             details: t.details || "",
             link: t.link || "",
-            base: t.base === true
+            base: t.base === true,
+            rating: Number(t.rating) || 0,
+            votes: Number(t.votes) || 0
         }));
 
     } catch (e) {
@@ -161,7 +165,7 @@ async function createTechnique(technique) {
     const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...technique, base: false })
+        body: JSON.stringify({ ...technique, base: false, rating: 0, votes: 0 })
     });
     if (!response.ok) throw new Error("Ошибка");
     const created = await response.json();
@@ -175,7 +179,226 @@ async function deleteTechniqueById(id) {
     saveBackup();
 }
 
-// ========== ВСПОМОГАТЕЛЬНЫЕ ==========
+// ========== РЕЙТИНГ ==========
+async function rateTechnique(id, score) {
+    let voted = JSON.parse(localStorage.getItem('voted') || '{}');
+    if (voted[id]) return showToast("Вы уже оценили этот приём!", "error");
+
+    const tech = allTechniques.find(t => String(t.id) === String(id));
+    if (!tech) return;
+
+    const currentRating = tech.rating || 0;
+    const currentVotes = tech.votes || 0;
+    const newVotes = currentVotes + 1;
+    const newRating = ((currentRating * currentVotes) + score) / newVotes;
+
+    try {
+        await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rating: newRating, votes: newVotes })
+        });
+
+        tech.rating = newRating;
+        tech.votes = newVotes;
+        voted[id] = true;
+        localStorage.setItem('voted', JSON.stringify(voted));
+        saveBackup();
+
+        showToast("Спасибо за оценку!");
+        displayAllTechniques(); // Перерисовать список
+    } catch (e) {
+        showToast("Не удалось сохранить оценку", "error");
+    }
+}
+
+// ========== ГЕНЕРАЦИЯ (Взвешенный рандом) ==========
+function getWeightedRandomTechnique(pool) {
+    // Если голосов меньше 3, даем бонус 2.5, чтобы новые приёмы не тонули
+    const getWeight = (tech) => {
+        const effectiveRating = (tech.votes || 0) < 3 ? 2.5 : (tech.rating || 0);
+        return Math.pow(effectiveRating + 1, 2);
+    };
+
+    const totalWeight = pool.reduce((sum, tech) => sum + getWeight(tech), 0);
+    let random = Math.random() * totalWeight;
+
+    for (const tech of pool) {
+        const weight = getWeight(tech);
+        if (random < weight) return tech;
+        random -= weight;
+    }
+    return pool[0];
+}
+
+function generateLessonStructure() {
+    if (allTechniques.length === 0) return showToast("Список приёмов пуст.", "error");
+
+    const categories = ["актуализация", "основной этап", "закрепление", "рефлексия"];
+    const selected = [];
+    const usedIds = new Set();
+
+    categories.forEach(cat => {
+        const pool = allTechniques.filter(t => t.category === cat && !usedIds.has(t.id));
+        if (pool.length > 0) {
+            const pick = getWeightedRandomTechnique(pool);
+            selected.push(pick);
+            usedIds.add(pick.id);
+        }
+    });
+
+    if (Math.random() < 0.5) {
+        const fiz = allTechniques.filter(t => t.category === "физкультминутка" && !usedIds.has(t.id));
+        if (fiz.length > 0) {
+            selected.splice(2, 0, getWeightedRandomTechnique(fiz));
+        }
+    }
+
+    if (selected.length < 3) {
+        const rest = allTechniques.filter(t => !usedIds.has(t.id));
+        while (selected.length < 3 && rest.length > 0) {
+            selected.push(rest.splice(Math.floor(Math.random() * rest.length), 1)[0]);
+        }
+    }
+
+    lastGenerated = selected;
+    displayLessonStructure(selected);
+    document.getElementById("result-actions").style.display = "flex";
+}
+
+// ========== ОТОБРАЖЕНИЕ ==========
+function displayLessonStructure(techniques) {
+    const container = document.getElementById("lesson-structure-container");
+    container.innerHTML = "";
+    if (!techniques.length) return;
+
+    const ul = document.createElement("ul");
+    techniques.forEach((tech, index) => {
+        const li = document.createElement("li");
+        
+        let detailsHTML = "";
+        if (tech.details || tech.link) {
+            let linkHTML = tech.link ? `<a href="${tech.link}" target="_blank" class="btn-resource-link">🔗 Полезный материал</a>` : "";
+            detailsHTML = `
+                <div class="tech-details-block" id="details-${tech.id}">
+                    <p>${tech.details || ""}</p>
+                    ${linkHTML}
+                </div>
+            `;
+        }
+
+        let toggleBtn = (tech.details || tech.link) 
+            ? `<button class="btn-toggle-details" onclick="toggleDetails('${tech.id}', this)">Подробнее ▾</button>` 
+            : "";
+
+        li.innerHTML = `
+            <span class="category-tag">${capitalize(tech.category)}</span>
+            <strong>${index + 1}. ${tech.name}</strong>
+            <div>${tech.description || "Нет описания"}</div>
+            ${toggleBtn}
+            ${detailsHTML}
+        `;
+        ul.appendChild(li);
+    });
+    container.appendChild(ul);
+}
+
+window.toggleDetails = function(id, btn) {
+    const block = document.getElementById(`details-${id}`);
+    if (block) {
+        block.classList.toggle("active");
+        btn.textContent = block.classList.contains("active") ? "Скрыть ▴" : "Подробнее ▾";
+    }
+}
+
+function displayAllTechniques() {
+    const container = document.getElementById("all-techniques-container");
+    container.style.display = "block";
+    container.innerHTML = "";
+
+    let list = allTechniques;
+    if (currentFilter !== "all") list = allTechniques.filter(t => t.category === currentFilter);
+
+    // Если нажата сортировка по рейтингу
+    if (sortByRating) {
+        list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+
+    if (list.length === 0) {
+        container.innerHTML = "<p>В этой категории пока нет приёмов.</p>";
+        return;
+    }
+
+    const ul = document.createElement("ul");
+    list.forEach((tech) => {
+        const li = document.createElement("li");
+        
+        let ratingHTML = "";
+        if (tech.votes > 0) {
+            ratingHTML = `<span class="rating-badge" title="${tech.votes} оценок">★ ${tech.rating.toFixed(1)}</span>`;
+        } else {
+            ratingHTML = `<span class="rating-badge" style="opacity:0.6">Пока нет оценок</span>`;
+        }
+
+        li.innerHTML = `
+            <div class="tech-header">
+                <div class="tech-title">
+                    <span class="category-tag">${capitalize(tech.category)}</span>
+                    <strong>${tech.name}</strong>
+                    ${ratingHTML}
+                </div>
+                <div class="tech-actions">
+                    <button class="delete-btn" data-id="${tech.id}">✕ Удалить</button>
+                </div>
+            </div>
+            <div>${tech.description || "Нет описания"}</div>
+            
+            <!-- Звездочки для голосования -->
+            <div class="stars" data-id="${tech.id}">
+                <span class="star" data-score="1">★</span>
+                <span class="star" data-score="2">★</span>
+                <span class="star" data-score="3">★</span>
+                <span class="star" data-score="4">★</span>
+                <span class="star" data-score="5">★</span>
+            </div>
+        `;
+        ul.appendChild(li);
+
+        const starsContainer = li.querySelector('.stars');
+        const stars = starsContainer.querySelectorAll('.star');
+        
+        let voted = JSON.parse(localStorage.getItem('voted') || '{}');
+        if (voted[tech.id]) {
+            starsContainer.style.opacity = '0.5';
+            starsContainer.title = "Вы уже оценили этот приём";
+        } else {
+            stars.forEach((star, index) => {
+                star.addEventListener('mouseenter', () => {
+                    stars.forEach((s, i) => s.classList.toggle('hovered', i <= index));
+                });
+            });
+            starsContainer.addEventListener('mouseleave', () => {
+                stars.forEach(s => s.classList.remove('hovered'));
+            });
+            
+            stars.forEach(star => {
+                star.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const score = Number(star.dataset.score);
+                    rateTechnique(tech.id, score);
+                });
+            });
+        }
+    });
+
+    container.appendChild(ul);
+
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", handleDeleteTechnique);
+    });
+}
+
+// ========== ДЕЙСТВИЯ ==========
 function capitalize(str) {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -199,121 +422,6 @@ function updateTechniquesCount() {
     el.classList.add("updated");
 }
 
-// ========== ГЕНЕРАЦИЯ И ОТОБРАЖЕНИЕ ==========
-function generateLessonStructure() {
-    if (allTechniques.length === 0) return showToast("Список приёмов пуст.", "error");
-
-    const categories = ["актуализация", "основной этап", "закрепление", "рефлексия"];
-    const selected = [];
-    const usedIds = new Set();
-
-    categories.forEach(cat => {
-        const pool = allTechniques.filter(t => t.category === cat && !usedIds.has(t.id));
-        if (pool.length > 0) {
-            const pick = pool[Math.floor(Math.random() * pool.length)];
-            selected.push(pick);
-            usedIds.add(pick.id);
-        }
-    });
-
-    if (Math.random() < 0.5) {
-        const fiz = allTechniques.filter(t => t.category === "физкультминутка" && !usedIds.has(t.id));
-        if (fiz.length > 0) {
-            selected.splice(2, 0, fiz[Math.floor(Math.random() * fiz.length)]);
-        }
-    }
-
-    if (selected.length < 3) {
-        const rest = allTechniques.filter(t => !usedIds.has(t.id));
-        while (selected.length < 3 && rest.length > 0) {
-            selected.push(rest.splice(Math.floor(Math.random() * rest.length), 1)[0]);
-        }
-    }
-
-    lastGenerated = selected;
-    displayLessonStructure(selected);
-    document.getElementById("result-actions").style.display = "flex";
-}
-
-function displayLessonStructure(techniques) {
-    const container = document.getElementById("lesson-structure-container");
-    container.innerHTML = "";
-    if (!techniques.length) return;
-
-    const ul = document.createElement("ul");
-    techniques.forEach((tech, index) => {
-        const li = document.createElement("li");
-        
-        // Формируем скрытый блок, если есть подробности или ссылка
-        let detailsHTML = "";
-        if (tech.details || tech.link) {
-            let linkHTML = tech.link ? `<a href="${tech.link}" target="_blank" class="btn-resource-link">🔗 Полезный материал</a>` : "";
-            detailsHTML = `
-                <div class="tech-details-block" id="details-${tech.id}">
-                    <p>${tech.details || ""}</p>
-                    ${linkHTML}
-                </div>
-            `;
-        }
-
-        // Формируем кнопку "Подробнее", если есть что показывать
-        let toggleBtn = (tech.details || tech.link) 
-            ? `<button class="btn-toggle-details" onclick="toggleDetails('${tech.id}', this)">Подробнее ▾</button>` 
-            : "";
-
-        li.innerHTML = `
-            <span class="category-tag">${capitalize(tech.category)}</span>
-            <strong>${index + 1}. ${tech.name}</strong>
-            <div>${tech.description || "Нет описания"}</div>
-            ${toggleBtn}
-            ${detailsHTML}
-        `;
-        ul.appendChild(li);
-    });
-    container.appendChild(ul);
-}
-
-// Функция плавного раскрытия
-window.toggleDetails = function(id, btn) {
-    const block = document.getElementById(`details-${id}`);
-    if (block) {
-        block.classList.toggle("active");
-        btn.textContent = block.classList.contains("active") ? "Скрыть ▴" : "Подробнее ▾";
-    }
-}
-
-function displayAllTechniques() {
-    const container = document.getElementById("all-techniques-container");
-    container.style.display = "block";
-    container.innerHTML = "";
-
-    let list = allTechniques;
-    if (currentFilter !== "all") list = allTechniques.filter(t => t.category === currentFilter);
-
-    if (list.length === 0) {
-        container.innerHTML = "<p>В этой категории пока нет приёмов.</p>";
-        return;
-    }
-
-    const ul = document.createElement("ul");
-    list.forEach((tech, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <span class="category-tag">${capitalize(tech.category)}</span>
-            <strong>${index + 1}. ${tech.name}</strong>
-            <div>${tech.description || "Нет описания"}</div>
-            <button class="delete-btn" data-id="${tech.id}">Удалить</button>
-        `;
-        ul.appendChild(li);
-    });
-    container.appendChild(ul);
-
-    document.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", handleDeleteTechnique);
-    });
-}
-
-// ========== ДЕЙСТВИЯ ==========
 function copyStructure() {
     if (!lastGenerated.length) return showToast("Сначала создайте структуру.", "error");
     const text = lastGenerated.map((t, i) => {
@@ -349,9 +457,21 @@ function hideAllTechniques() {
 
 function setFilter(category) {
     currentFilter = category;
+    sortByRating = false; // Сбрасываем сортировку при смене категории
+    document.getElementById("sort-by-rating").classList.remove("active");
     document.querySelectorAll(".filter-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.category === category);
+        if(btn.id !== "sort-by-rating") {
+            btn.classList.toggle("active", btn.dataset.category === category);
+        }
     });
+    if (document.getElementById("all-techniques-container").style.display === "block") {
+        displayAllTechniques();
+    }
+}
+
+function toggleSort() {
+    sortByRating = !sortByRating;
+    document.getElementById("sort-by-rating").classList.toggle("active", sortByRating);
     if (document.getElementById("all-techniques-container").style.display === "block") {
         displayAllTechniques();
     }
@@ -437,8 +557,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("show-add-form-button").addEventListener("click", () => toggleAddForm(true));
     document.getElementById("cancel-add-button").addEventListener("click", () => toggleAddForm(false));
     document.getElementById("add-technique-form").addEventListener("submit", handleAddTechnique);
+    document.getElementById("sort-by-rating").addEventListener("click", toggleSort);
 
-    document.querySelectorAll(".filter-btn").forEach(btn => {
+    document.querySelectorAll(".filter-btn:not(#sort-by-rating)").forEach(btn => {
         btn.addEventListener("click", () => setFilter(btn.dataset.category));
     });
 });

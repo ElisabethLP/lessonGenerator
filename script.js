@@ -98,20 +98,8 @@ async function loadTechniques() {
     const loader = document.getElementById("loader");
     if (loader) loader.style.display = "flex";
 
-    // Тайм-аут: если сервер не ответит за 5 секунд, покажем стандартные приёмы
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
     try {
-        // Добавляем заголовки для кэширования на телефоне
-        const response = await fetch(API_URL, {
-            signal: controller.signal,
-            headers: { 
-                'Cache-Control': 'max-age=300' // кэш на 5 минут
-            }
-        });
-        clearTimeout(timeoutId);
-
+        const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Не удалось загрузить");
         let loaded = await response.json();
 
@@ -129,7 +117,7 @@ async function loadTechniques() {
             }
         }
 
-        // Преобразуем данные, добавляем недостающие поля
+        // Приводим данные к единому виду, добавляем рейтинг старым приёмам
         allTechniques = loaded.map((t, i) => ({
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
@@ -143,41 +131,6 @@ async function loadTechniques() {
         }));
 
     } catch (e) {
-        clearTimeout(timeoutId);
-        console.error("Ошибка загрузки:", e);
-        
-        // Безопасное восстановление из кэша
-        try {
-            const backup = restoreFromBackup();
-            if (backup && backup.length > 0) {
-                allTechniques = backup;
-                showToast("Используется сохранённая копия.", "error");
-            } else {
-                allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({ id: Date.now() + i, ...t }));
-                showToast("Сеть недоступна. Стандартные приёмы.", "error");
-            }
-        } catch (err) {
-            allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({ id: Date.now() + i, ...t }));
-            showToast("Ошибка кэша. Стандартные приёмы.", "error");
-        }
-    } finally {
-        if (loader) loader.style.display = "none";
-    }
-}
-
-        // Приводим данные к единому виду, добавляем рейтинг старым приёмам
-        allTechniques = loaded.map((t, i) => ({
-            id: t.id ?? Date.now() + i,
-            name: t.name || "Без названия",
-            category: t.category || "основной этап",
-            description: t.description || "",
-            details: t.details || "",
-            link: t.link || "",
-            base: t.base === true,
-            rating: Number(t.rating) || 0,
-            votes: Number(t.votes) || 0
-        }));
-         catch (e) {
         console.error(e);
         const backup = restoreFromBackup();
         if (backup) {
@@ -190,7 +143,7 @@ async function loadTechniques() {
     } finally {
         if (loader) loader.style.display = "none";
     }
-
+}
 
 async function seedDefaultTechniques() {
     for (const t of DEFAULT_TECHNIQUES) {

@@ -1,4 +1,4 @@
-/* ========== ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ (ТЕМЫ) ========== */
+/* ========== ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ ========== */
 :root {
     --bg-color: #f4f4f4;
     --text-color: #333;
@@ -48,19 +48,13 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.container {
-    max-width: 960px;
-    margin: 20px auto;
-    padding: 0 20px;
-}
-
 header {
     background: var(--header-bg);
     color: var(--header-text);
     padding: 1.2rem 0;
     text-align: center;
     margin-bottom: 20px;
-    position: relative; /* Для позиционирования кнопки темы */
+    position: relative;
     transition: background-color 0.3s ease;
 }
 
@@ -69,7 +63,6 @@ header h1 {
     font-size: 1.6em;
 }
 
-/* Кнопка переключения темы */
 #theme-toggle {
     position: absolute;
     top: 50%;
@@ -115,6 +108,17 @@ main {
 /* ========== КНОПКИ ========== */
 button {
     font-family: inherit;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 #generate-button,
@@ -129,7 +133,6 @@ button {
     cursor: pointer;
     font-size: 1.1em;
     margin-bottom: 15px;
-    transition: background-color 0.3s ease;
 }
 
 #generate-button:hover,
@@ -156,12 +159,18 @@ button {
     background-color: var(--item-bg);
     border-left: 4px solid var(--header-bg);
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    animation: fadeInUp 0.35s ease-out backwards;
 }
 
 #lesson-structure-container li:last-child {
     margin-bottom: 0;
 }
+
+#lesson-structure-container li:nth-child(1) { animation-delay: 0.03s; }
+#lesson-structure-container li:nth-child(2) { animation-delay: 0.09s; }
+#lesson-structure-container li:nth-child(3) { animation-delay: 0.15s; }
+#lesson-structure-container li:nth-child(4) { animation-delay: 0.21s; }
+#lesson-structure-container li:nth-child(5) { animation-delay: 0.27s; }
 
 /* ========== КНОПКИ ДЕЙСТВИЙ ========== */
 #result-actions {
@@ -180,12 +189,13 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease;
 }
 
 #copy-button:hover {
     filter: brightness(0.9);
-}#regenerate-button {
+}
+
+#regenerate-button {
     background: #f0ad4e;
     color: #fff;
     padding: 10px 20px;
@@ -193,7 +203,6 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease;
 }
 
 #regenerate-button:hover {
@@ -206,6 +215,54 @@ button {
     margin: 8px 0 0;
     flex-basis: 100%;
     text-align: center;
+}
+
+/* ========== ПОДРОБНОЕ ОПИСАНИЕ ========== */
+.btn-toggle-details {
+    background: transparent;
+    color: var(--header-bg);
+    border: 1px solid var(--header-bg);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle-details:hover {
+    background: var(--header-bg);
+    color: white;
+}
+
+.tech-details-block {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+    font-size: 0.95em;
+    color: var(--footer-text);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tech-details-block.active {
+    display: block;
+}
+
+.btn-resource-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: #28a745;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.85em;
+    transition: background 0.2s ease;
+}
+
+.btn-resource-link:hover {
+    background: #218838;
 }
 
 /* ========== ФИЛЬТРЫ ========== */
@@ -225,7 +282,6 @@ button {
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.9em;
-    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .filter-btn:hover {
@@ -284,14 +340,12 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.95em;
-    transition: background-color 0.2s ease;
 }
 
 #hide-all-button:hover {
     background: #5a6268;
 }
 
-/* ========== КНОПКА УДАЛЕНИЯ ========== */
 .delete-btn {
     background: #dc3545;
     color: #fff;
@@ -319,6 +373,7 @@ button {
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
+    animation: fadeIn 0.3s ease-out;
 }
 
 #add-technique-form label {
@@ -328,6 +383,7 @@ button {
 }
 
 #add-technique-form input[type="text"],
+#add-technique-form input[type="url"],
 #add-technique-form textarea,
 #add-technique-form select {
     width: calc(100% - 20px);
@@ -387,120 +443,14 @@ footer {
     font-size: 0.9em;
 }
 
-/* ========== АДАПТИВНОСТЬ ========== */
-max-width: 500px {
-    #copy-button,
-    #regenerate-button {
-        display: block;
-        width: 100%;
-        margin: 5px 0;
-    }
-
-    .filters {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .filter-btn {
-        width: 100%;
-    }
-
-    main {
-        margin: 10px;
-        padding: 15px;
-    }
+.school-name {
+    font-weight: bold;
+    color: var(--header-bg);
+    margin-bottom: 4px;
+    font-size: 0.95em;
 }
 
-/* ========== ПЛАВНЫЕ АНИМАЦИИ ========== */
-button {
-    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-}
-
-button:active {
-    transform: translateY(1px) scale(0.98);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-#lesson-structure-container li {
-    animation: fadeInUp 0.35s ease-out backwards;
-}
-
-#lesson-structure-container li:nth-child(1) { animation-delay: 0.03s; }
-#lesson-structure-container li:nth-child(2) { animation-delay: 0.09s; }
-#lesson-structure-container li:nth-child(3) { animation-delay: 0.15s; }
-#lesson-structure-container li:nth-child(4) { animation-delay: 0.21s; }
-#lesson-structure-container li:nth-child(5) { animation-delay: 0.27s; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-#all-techniques-container {
-    animation: fadeIn 0.3s ease-out;
-}
-
-#add-technique-form {
-    animation: fadeIn 0.3s ease-out;
-}
-
-#all-techniques-container li {
-    animation: fadeInUp 0.3s ease-out backwards;
-}
-
-#all-techniques-container li:nth-child(1) { animation-delay: 0.02s; }
-#all-techniques-container li:nth-child(2) { animation-delay: 0.05s; }
-#all-techniques-container li:nth-child(3) { animation-delay: 0.08s; }
-#all-techniques-container li:nth-child(4) { animation-delay: 0.11s; }
-#all-techniques-container li:nth-child(5) { animation-delay: 0.14s; }
-
-@keyframes countPulse {
-    0%   { color: var(--header-bg); transform: scale(1); }
-    50%  { color: var(--header-bg); transform: scale(1.06); }
-    100% { color: var(--footer-text); transform: scale(1); }
-}
-
-.techniques-count.updated {
-    animation: countPulse 0.5s ease-out;
-}
-
-@keyframes copiedPulse {
-    0%   { transform: scale(1); background: var(--header-bg); }
-    50%  { transform: scale(1.08); background: var(--header-bg); }
-    100% { transform: scale(1); background: var(--header-bg); }
-}
-
-#copy-button.copied {
-    animation: copiedPulse 0.45s ease-out;
-}
-
-.filter-btn {
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
-}
-
-.filter-btn:hover {
-    transform: translateY(-1px);
-}
-
-prefers-reduced-motion: reduce {
-    *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-    }
-}
-
-/* ========== СЧЁТЧИК ПРИЁМОВ ========== */
+/* ========== СЧЁТЧИК ========== */
 .techniques-count {
     font-size: 0.9em;
     color: var(--footer-text);
@@ -513,28 +463,24 @@ prefers-reduced-motion: reduce {
     animation: countPulse 0.5s ease-out;
 }
 
-/* ========== АДАПТИВНЫЕ АНИМАЦИИ ========== */
-body.reduced-motion #lesson-structure-container li,
-body.reduced-motion #all-techniques-container li {
-    animation: fadeIn 0.15s ease-out;
-    animation-delay: 0s !important;
+/* ========== АНИМАЦИИ ========== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-body.reduced-motion button {
-    transition: background-color 0.15s ease;
-    transform: none !important;
-    box-shadow: none !important;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-body.reduced-motion #copy-button.copied {
-    animation: none;
+@keyframes countPulse {
+    0%   { color: var(--header-bg); transform: scale(1); }
+    50%  { color: var(--header-bg); transform: scale(1.06); }
+    100% { color: var(--footer-text); transform: scale(1); }
 }
 
-body.reduced-motion .techniques-count.updated {
-    animation: none;
-}
-
-/* ========== ИНДИКАТОР ЗАГРУЗКИ (SPINNER) ========== */
+/* ========== ЗАГРУЗКА (SPINNER) ========== */
 #loader {
     display: flex;
     flex-direction: column;
@@ -546,7 +492,8 @@ body.reduced-motion .techniques-count.updated {
 }
 
 .spinner {
-    width: 30px;height: 30px;
+    width: 30px;
+    height: 30px;
     border: 3px solid var(--border-color);
     border-top: 3px solid var(--header-bg);
     border-radius: 50%;
@@ -559,7 +506,7 @@ body.reduced-motion .techniques-count.updated {
     100% { transform: rotate(360deg); }
 }
 
-/* ========== ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ (ТОСТЫ) ========== */
+/* ========== УВЕДОМЛЕНИЯ ========== */
 #toast-container {
     position: fixed;
     bottom: 20px;
@@ -568,7 +515,7 @@ body.reduced-motion .techniques-count.updated {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    pointer-events: none; /* Чтобы не мешали кликать по сайту */
+    pointer-events: none;
 }
 
 .toast {
@@ -602,242 +549,51 @@ body.reduced-motion .techniques-count.updated {
 @keyframes toastOut {
     to { opacity: 0; transform: translateY(20px); }
 }
-/* ========== СИСТЕМА РЕЙТИНГА ========== */
-.tech-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
 
-.tech-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    flex: 1;
-}
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 500px) {
+    #copy-button,
+    #regenerate-button {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+    }
 
-/* Красивые звездочки */
-.stars {
-    display: inline-flex;
-    gap: 2px;
-    font-size: 1.1em;
-    color: #ccc;
-    cursor: pointer;
-    user-select: none;
-}
+    .filters {
+        flex-direction: column;
+        align-items: center;
+    }
 
-[data-theme="dark"] .stars {
-    color: #555;
-}
+    .filter-btn {
+        width: 100%;
+    }
 
-.stars .star {
-    transition: color 0.2s ease, transform 0.1s ease;
-}
-
-/* Подсветка при наведении и выборе */
-.stars .star:hover,
-.stars .star.hovered,
-.stars .star.active {
-    color: #f0ad4e !important;
-}
-
-.stars:hover .star {
-    transform: scale(1.1);
-}
-
-.rating-badge {
-    font-size: 0.85em;
-    color: var(--footer-text);
-    background: var(--item-bg);
-    padding: 2px 8px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-}
-
-/* Скрытая кнопка удаления (появляется только при наведении на карточку) */
-.tech-actions {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    display: flex;
-    align-items: center;
-}
-
-#all-techniques-container li:hover .tech-actions {
-    opacity: 1;
-}
-
-/* На телефонах кнопка удаления всегда видна, но аккуратная */
-max-width: 600px {
-    .tech-actions {
-        opacity: 1;
+    main {
+        margin: 10px;
+        padding: 15px;
     }
 }
 
-.delete-btn {
-    background: transparent;
-    color: #dc3545;
-    border: 1px solid transparent;
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85em;
-    transition: all 0.2s ease;
-}
-
-.delete-btn:hover {
-    background: #dc3545;
-    color: #fff;
-    border-color: #dc3545;
-}
-/* ========== ПОДРОБНОЕ ОПИСАНИЕ В СГЕНЕРИРОВАННОМ УРОКЕ ========== */
-.btn-toggle-details {
-    background: transparent;
-    color: var(--header-bg);
-    border: 1px solid var(--header-bg);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: all 0.2s ease;
-}
-
-.btn-toggle-details:hover {
-    background: var(--header-bg);
-    color: white;
-}
-
-.tech-details-block {
-    display: none; /* По умолчанию скрыто */
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed var(--border-color);
-    font-size: 0.95em;
-    color: var(--footer-text);
-    animation: fadeIn 0.3s ease-out;
-}
-
-.tech-details-block.active {
-    display: block;
-}
-
-.btn-resource-link {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 6px 12px;
-    background: #28a745;
-    color: white !important;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.85em;
-    transition: background 0.2s ease;
-}
-
-.btn-resource-link:hover {
-    background: #218838;
-}
-/* ========== ПОДВАЛ ========== */
-.school-name {
-    font-weight: bold;
-    color: var(--header-bg); /* Используем фирменный бирюзовый цвет */
-    margin-bottom: 4px;
-    font-size: 0.95em;
-}
-/* ========== СИСТЕМА РЕЙТИНГА ========== */
-.tech-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.tech-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    flex: 1;
-}
-
-/* Красивые звездочки */
-.stars {
-    display: inline-flex;
-    gap: 2px;
-    font-size: 1.2em;
-    color: #ccc;
-    cursor: pointer;
-    user-select: none;
-    margin-top: 5px;
-}
-
-[data-theme="dark"] .stars {
-    color: #555;
-}
-
-.stars .star {
-    transition: color 0.2s ease, transform 0.1s ease;
-}
-
-/* Подсветка при наведении и выборе */
-.stars .star:hover,
-.stars .star.hovered,
-.stars .star.active {
-    color: #f0ad4e !important;
-}
-
-.stars:hover .star {
-    transform: scale(1.1);
-}
-
-.rating-badge {
-    font-size: 0.85em;
-    color: var(--footer-text);
-    background: var(--item-bg);
-    padding: 2px 8px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-}
-
-/* Скрытая кнопка удаления */
-.tech-actions {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    display: flex;
-    align-items: center;
-}
-
-#all-techniques-container li:hover .tech-actions {
-    opacity: 1;
-}
-
-/* На телефонах кнопка удаления всегда видна */
-@media (max-width: 600px) {
-    .tech-actions {
-        opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
     }
 }
 
-.delete-btn {
-    background: transparent;
-    color: #dc3545;
-    border: 1px solid transparent;
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85em;
-    transition: all 0.2s ease;
+body.reduced-motion #lesson-structure-container li,
+body.reduced-motion #all-techniques-container li {
+    animation: fadeIn 0.15s ease-out;
+    animation-delay: 0s !important;
 }
 
-.delete-btn:hover {
-    background: #dc3545;
-    color: #fff;
-    border-color: #dc3545;
+body.reduced-motion button {
+    transition: background-color 0.15s ease;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
-/* Активная кнопка сортировки */
-.sort-btn.active {
-    background: #f0ad4e;
-    color: white;
+body.reduced-motion .techniques-count.updated {
+    animation: none;
 }

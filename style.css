@@ -602,3 +602,146 @@ body.reduced-motion .techniques-count.updated {
 @keyframes toastOut {
     to { opacity: 0; transform: translateY(20px); }
 }
+/* ========== СИСТЕМА РЕЙТИНГА ========== */
+.tech-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.tech-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+/* Красивые звездочки */
+.stars {
+    display: inline-flex;
+    gap: 2px;
+    font-size: 1.1em;
+    color: #ccc;
+    cursor: pointer;
+    user-select: none;
+}
+
+[data-theme="dark"] .stars {
+    color: #555;
+}
+
+.stars .star {
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+/* Подсветка при наведении и выборе */
+.stars .star:hover,
+.stars .star.hovered,
+.stars .star.active {
+    color: #f0ad4e !important;
+}
+
+.stars:hover .star {
+    transform: scale(1.1);
+}
+
+.rating-badge {
+    font-size: 0.85em;
+    color: var(--footer-text);
+    background: var(--item-bg);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* Скрытая кнопка удаления (появляется только при наведении на карточку) */
+.tech-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+#all-techniques-container li:hover .tech-actions {
+    opacity: 1;
+}
+
+/* На телефонах кнопка удаления всегда видна, но аккуратная */
+max-width: 600px {
+    .tech-actions {
+        opacity: 1;
+    }
+}
+
+.delete-btn {
+    background: transparent;
+    color: #dc3545;
+    border: 1px solid transparent;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+/* ========== ПОДРОБНОЕ ОПИСАНИЕ В СГЕНЕРИРОВАННОМ УРОКЕ ========== */
+.btn-toggle-details {
+    background: transparent;
+    color: var(--header-bg);
+    border: 1px solid var(--header-bg);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle-details:hover {
+    background: var(--header-bg);
+    color: white;
+}
+
+.tech-details-block {
+    display: none; /* По умолчанию скрыто */
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+    font-size: 0.95em;
+    color: var(--footer-text);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tech-details-block.active {
+    display: block;
+}
+
+.btn-resource-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: #28a745;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.85em;
+    transition: background 0.2s ease;
+}
+
+.btn-resource-link:hover {
+    background: #218838;
+}
+/* ========== ПОДВАЛ ========== */
+.school-name {
+    font-weight: bold;
+    color: var(--header-bg); /* Используем фирменный бирюзовый цвет */
+    margin-bottom: 4px;
+    font-size: 0.95em;
+}

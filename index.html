@@ -70,7 +70,7 @@
 
             <form id="add-technique-form" style="display: none;">
                 <label for="technique-name">Название приёма:</label>
-                <input type="text" id="technique-name" required>
+                <input type="text" id="technique-name" required placeholder="Например: Кластер">
 
                 <label for="technique-category">Категория:</label>
                 <select id="technique-category" required>
@@ -82,16 +82,25 @@
                     <option value="рефлексия">Рефлексия</option>
                 </select>
 
-                <label for="technique-description">Описание:</label>
-                <textarea id="technique-description"></textarea>
+                <label for="technique-description">Краткое описание (видно сразу):</label><textarea id="technique-description" placeholder="Коротко опишите суть приёма (1-2 предложения)."></textarea>
 
-                <button type="submit">Сохранить приём</button>
-                <button type="button" id="cancel-add-button">Отмена</button>
+                <!-- НОВЫЕ ПОЛЯ -->
+                <label for="technique-details">Подробное описание (необязательно):</label>
+                <textarea id="technique-details" placeholder="Как именно проводить приём? Инструкция для учителя."></textarea>
+
+                <label for="technique-link">Ссылка на материал (необязательно):</label>
+                <input type="url" id="technique-link" placeholder="https://...">
+
+                <div style="margin-top: 20px;">
+                    <button type="submit">Сохранить приём</button>
+                    <button type="button" id="cancel-add-button">Отмена</button>
+                </div>
             </form>
         </section>
     </main>
 
     <footer>
+        <p class="school-name">МОУ «КСОШ №8»</p>
         <p>© 2026 Индивидуальный проект Ложичевой Е.П.</p>
     </footer>
 

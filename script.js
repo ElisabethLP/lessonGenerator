@@ -1,37 +1,38 @@
 // ========== НАСТРОЙКИ ==========
 const API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
 const ADMIN_PASSWORD = "88888888";
-const BASE_VERSION = "1.0";
+const BASE_VERSION = "1.2"; // Подняли версию из-за новых полей
 
 // ========== БАЗОВЫЕ ПРИЁМЫ ==========
+// (Оставил ваши 20 приёмов. Если у каких-то есть ссылки, можно добавить их сюда)
 const DEFAULT_TECHNIQUES = [
-    { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики." },
-    { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал." },
-    { base: true, name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме на доске или в тетради." },
-    { base: true, name: "Работа в малых группах", category: "основной этап", description: "Учащиеся разбиваются на мини-группы для обсуждения." },
-    { base: true, name: "Обсуждение в парах", category: "основной этап", description: "Двое учащихся обсуждают тему или вопрос." },
-    { base: true, name: "Кейс-стади", category: "основной этап", description: "Анализ конкретной ситуации или проблемы." },
-    { base: true, name: "Дебаты", category: "основной этап", description: "Спор по теме с аргументами «за» и «против»." },
-    { base: true, name: "Мини-лекция", category: "основной этап", description: "Краткое изложение учителем основного материала." },
-    { base: true, name: "Ролевая игра", category: "основной этап", description: "Учащиеся играют роли для лучшего понимания ситуации." },
-    { base: true, name: "Решение задач", category: "закрепление", description: "Практическое применение знаний для решения задач." },
-    { base: true, name: "Лови ошибку", category: "закрепление", description: "Учитель намеренно допускает ошибку, ученики должны её найти." },
-    { base: true, name: "Презентация учащегося", category: "закрепление", description: "Доклад одного или нескольких учащихся по теме." },
-    { base: true, name: "Взаимопроверка", category: "закрепление", description: "Ученики проверяют работы друг друга по критериям." },
-    { base: true, name: "Зарядка для глаз", category: "физкультминутка", description: "Короткие упражнения для глаз, чтобы снять напряжение." },
-    { base: true, name: "Разминка на месте", category: "физкультминутка", description: "Простые движения: наклоны, потягивания, хлопки." },
-    { base: true, name: "Синквейн", category: "рефлексия", description: "Пятистишие по теме урока: существительное, прилагательные, глаголы, фраза, итог." },
-    { base: true, name: "Незаконченное предложение", category: "рефлексия", description: "Ученики продолжают фразу: «Сегодня я узнал…»." },
-    { base: true, name: "Дерево успеха", category: "рефлексия", description: "Ученики отмечают, что получилось хорошо, а что ещё нужно доработать." },
-    { base: true, name: "Плюс / минус / интересно", category: "рефлексия", description: "Ученики записывают, что понравилось, что нет и что удивило." },
-    { base: true, name: "Светофор", category: "рефлексия", description: "Зелёный — всё понятно, жёлтый — есть вопросы, красный — не понял." }
+    { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики.", details: "Учитель задает тему. Ученики по очереди называют идеи. Главное правило: никакой критики. Все идеи записываются на доску.", link: "" },
+    { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме, чтобы вспомнить материал.", details: "Фронтальный опрос. Учитель задает вопрос, ученики поднимают руки. Можно использовать метод 'Светофор' для быстрой проверки.", link: "" },
+    { base: true, name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме на доске или в тетради.", details: "В центре доски пишется ключевое слово. Вокруг рисуются круги с ассоциациями, которые соединяются линиями.", link: "" },
+    { base: true, name: "Работа в малых группах", category: "основной этап", description: "Учащиеся разбиваются на мини-группы для обсуждения.", details: "", link: "" },
+    { base: true, name: "Обсуждение в парах", category: "основной этап", description: "Двое учащихся обсуждают тему или вопрос.", details: "", link: "" },
+    { base: true, name: "Кейс-стади", category: "основной этап", description: "Анализ конкретной ситуации или проблемы.", details: "", link: "" },
+    { base: true, name: "Дебаты", category: "основной этап", description: "Спор по теме с аргументами «за» и «против».", details: "", link: "" },
+    { base: true, name: "Мини-лекция", category: "основной этап", description: "Краткое изложение учителем основного материала.", details: "", link: "" },
+    { base: true, name: "Ролевая игра", category: "основной этап", description: "Учащиеся играют роли для лучшего понимания ситуации.", details: "", link: "" },
+    { base: true, name: "Решение задач", category: "закрепление", description: "Практическое применение знаний для решения задач.", details: "", link: "" },
+    { base: true, name: "Лови ошибку", category: "закрепление", description: "Учитель намеренно допускает ошибку, ученики должны её найти.", details: "", link: "" },
+    { base: true, name: "Презентация учащегося", category: "закрепление", description: "Доклад одного или нескольких учащихся по теме.", details: "", link: "" },
+    { base: true, name: "Взаимопроверка", category: "закрепление", description: "Ученики проверяют работы друг друга по критериям.", details: "", link: "" },
+    { base: true, name: "Зарядка для глаз", category: "физкультминутка", description: "Короткие упражнения для глаз, чтобы снять напряжение.", details: "", link: "" },
+    { base: true, name: "Разминка на месте", category: "физкультминутка", description: "Простые движения: наклоны, потягивания, хлопки.", details: "", link: "" },
+    { base: true, name: "Синквейн", category: "рефлексия", description: "Пятистишие по теме урока: существительное, прилагательные, глаголы, фраза, итог.", details: "", link: "" },
+    { base: true, name: "Незаконченное предложение", category: "рефлексия", description: "Ученики продолжают фразу: «Сегодня я узнал…».", details: "", link: "" },
+    { base: true, name: "Дерево успеха", category: "рефлексия", description: "Ученики отмечают, что получилось хорошо, а что ещё нужно доработать.", details: "", link: "" },
+    { base: true, name: "Плюс / минус / интересно", category: "рефлексия", description: "Ученики записывают, что понравилось, что нет и что удивило.", details: "", link: "" },
+    { base: true, name: "Светофор", category: "рефлексия", description: "Зелёный — всё понятно, жёлтый — есть вопросы, красный — не понял.", details: "", link: "" }
 ];
 
 let allTechniques = [];
 let lastGenerated = [];
 let currentFilter = "all";
 
-// ========== УВЕДОМЛЕНИЯ (ТОСТЫ) ==========
+// ========== УВЕДОМЛЕНИЯ ==========
 function showToast(message, type = "success") {
     const container = document.getElementById("toast-container");
     if (!container) return;
@@ -55,7 +56,7 @@ function applyTheme(theme) {
 
 function initTheme() {
     const saved = localStorage.getItem("theme");
-    if (saved)applyTheme(saved);
+    if (saved) applyTheme(saved);
     else {
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         applyTheme(prefersDark ? "dark" : "light");
@@ -92,7 +93,7 @@ function shouldUpdateBase() {
     return false;
 }
 
-// ========== ЗАГРУЗКА И СОХРАНЕНИЕ (MockAPI) ==========
+// ========== ЗАГРУЗКА И СОХРАНЕНИЕ ==========
 async function loadTechniques() {
     const loader = document.getElementById("loader");
     if (loader) loader.style.display = "flex";
@@ -108,20 +109,20 @@ async function loadTechniques() {
             const hasBase = allTechniques.some(t => t.base === true);
             if (hasBase && shouldUpdateBase()) {
                 const userTechniques = allTechniques.filter(t => t.base !== true);
-                const newBase = DEFAULT_TECHNIQUES.map((t, i) => ({
-                    id: Date.now() + i,
-                    ...t
-                }));
+                const newBase = DEFAULT_TECHNIQUES.map((t, i) => ({ id: Date.now() + i, ...t }));
                 allTechniques = [...newBase, ...userTechniques];
                 await rewriteAllTechniques();
             }
         }
 
+        // Приводим данные к единому виду (добавляем details и link)
         allTechniques = allTechniques.map((t, i) => ({
             id: t.id ?? Date.now() + i,
             name: t.name || "Без названия",
             category: t.category || "основной этап",
             description: t.description || "",
+            details: t.details || "",
+            link: t.link || "",
             base: t.base === true
         }));
 
@@ -170,7 +171,7 @@ async function createTechnique(technique) {
 
 async function deleteTechniqueById(id) {
     const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if(!response.ok) throw new Error("Ошибка");
+    if (!response.ok) throw new Error("Ошибка");
     saveBackup();
 }
 
@@ -242,14 +243,43 @@ function displayLessonStructure(techniques) {
     const ul = document.createElement("ul");
     techniques.forEach((tech, index) => {
         const li = document.createElement("li");
+        
+        // Формируем скрытый блок, если есть подробности или ссылка
+        let detailsHTML = "";
+        if (tech.details || tech.link) {
+            let linkHTML = tech.link ? `<a href="${tech.link}" target="_blank" class="btn-resource-link">🔗 Полезный материал</a>` : "";
+            detailsHTML = `
+                <div class="tech-details-block" id="details-${tech.id}">
+                    <p>${tech.details || ""}</p>
+                    ${linkHTML}
+                </div>
+            `;
+        }
+
+        // Формируем кнопку "Подробнее", если есть что показывать
+        let toggleBtn = (tech.details || tech.link) 
+            ? `<button class="btn-toggle-details" onclick="toggleDetails('${tech.id}', this)">Подробнее ▾</button>` 
+            : "";
+
         li.innerHTML = `
             <span class="category-tag">${capitalize(tech.category)}</span>
             <strong>${index + 1}. ${tech.name}</strong>
-            ${tech.description || "Нет описания"}
+            <div>${tech.description || "Нет описания"}</div>
+            ${toggleBtn}
+            ${detailsHTML}
         `;
         ul.appendChild(li);
     });
     container.appendChild(ul);
+}
+
+// Функция плавного раскрытия
+window.toggleDetails = function(id, btn) {
+    const block = document.getElementById(`details-${id}`);
+    if (block) {
+        block.classList.toggle("active");
+        btn.textContent = block.classList.contains("active") ? "Скрыть ▴" : "Подробнее ▾";
+    }
 }
 
 function displayAllTechniques() {
@@ -271,7 +301,7 @@ function displayAllTechniques() {
         li.innerHTML = `
             <span class="category-tag">${capitalize(tech.category)}</span>
             <strong>${index + 1}. ${tech.name}</strong>
-            ${tech.description || "Нет описания"}
+            <div>${tech.description || "Нет описания"}</div>
             <button class="delete-btn" data-id="${tech.id}">Удалить</button>
         `;
         ul.appendChild(li);
@@ -286,7 +316,12 @@ function displayAllTechniques() {
 // ========== ДЕЙСТВИЯ ==========
 function copyStructure() {
     if (!lastGenerated.length) return showToast("Сначала создайте структуру.", "error");
-    const text = lastGenerated.map((t, i) => `${i + 1}. [${capitalize(t.category)}] ${t.name} — ${t.description || "без описания"}`).join("\n");
+    const text = lastGenerated.map((t, i) => {
+        let str = `${i + 1}. [${capitalize(t.category)}] ${t.name} — ${t.description || "без описания"}`;
+        if (t.details) str += `\n   Подробнее: ${t.details}`;
+        if (t.link) str += `\n   Ссылка: ${t.link}`;
+        return str;
+    }).join("\n\n");
     navigator.clipboard.writeText(text).then(() => showToast("Скопировано!"));
 }
 
@@ -349,6 +384,8 @@ function toggleAddForm(show) {
     if (!show) {
         document.getElementById("technique-name").value = "";
         document.getElementById("technique-description").value = "";
+        document.getElementById("technique-details").value = "";
+        document.getElementById("technique-link").value = "";
         document.getElementById("technique-category").value = "";
     }
 }
@@ -358,12 +395,14 @@ async function handleAddTechnique(event) {
     const name = document.getElementById("technique-name").value.trim();
     const category = document.getElementById("technique-category").value;
     const description = document.getElementById("technique-description").value.trim();
+    const details = document.getElementById("technique-details").value.trim();
+    const link = document.getElementById("technique-link").value.trim();
 
     if (!name) return showToast("Введите название.", "error");
     if (!category) return showToast("Выберите категорию.", "error");
 
     try {
-        const created = await createTechnique({ name, category, description });
+        const created = await createTechnique({ name, category, description, details, link });
         allTechniques.push(created);
         updateTechniquesCount();
         toggleAddForm(false);

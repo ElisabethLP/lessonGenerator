@@ -1,10 +1,10 @@
 // ========== НАСТРОЙКИ ==========
-const API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
-const ADMIN_PASSWORD = "88888888";
-const BASE_VERSION = "1.3"; // Подняли версию
+var API_URL = "https://6acb9b2eef37b1504078101f.mockapi.io/techniques";
+var ADMIN_PASSWORD = "88888888";
+var BASE_VERSION = "1.3";
 
 // ========== БАЗОВЫЕ ПРИЁМЫ ==========
-const DEFAULT_TECHNIQUES = [
+var DEFAULT_TECHNIQUES = [
     { base: true, name: "Мозговой штурм", category: "актуализация", description: "Генерация идей за короткое время, без критики.", details: "Учитель задает тему. Ученики по очереди называют любые идеи...", link: "", rating: 0, votes: 0 },
     { base: true, name: "Вопрос к классу", category: "актуализация", description: "Учитель задаёт вопрос по прошлой теме.", details: "Фронтальный опрос...", link: "", rating: 0, votes: 0 },
     { base: true, name: "Кластер", category: "актуализация", description: "Учащиеся записывают ассоциации по теме.", details: "В центре доски пишется ключевое слово...", link: "", rating: 0, votes: 0 },
@@ -27,44 +27,44 @@ const DEFAULT_TECHNIQUES = [
     { base: true, name: "Светофор", category: "рефлексия", description: "Оценка понимания темы.", details: "Карточки трех цветов...", link: "", rating: 0, votes: 0 }
 ];
 
-let allTechniques = [];
-let lastGenerated = [];
-let currentFilter = "all";
-let sortByRating = false; // Новый флаг для сортировки
+var allTechniques = [];
+var lastGenerated = [];
+var currentFilter = "all";
+var sortByRating = false;
 
 // ========== УВЕДОМЛЕНИЯ ==========
-function showToast(message, type = "success") {
-    const container = document.getElementById("toast-container");
+function showToast(message, type) {
+    var container = document.getElementById("toast-container");
     if (!container) return;
-    const toast = document.createElement("div");
-    toast.className = `toast toast-${type}`;
+    var toast = document.createElement("div");
+    toast.className = "toast toast-" + (type || "success");
     toast.textContent = message;
     container.appendChild(toast);
-    setTimeout(() => {
+    setTimeout(function () {
         toast.classList.add("toast-hide");
-        toast.addEventListener("animationend", () => toast.remove());
+        toast.addEventListener("animationend", function () { toast.remove(); });
     }, 3500);
 }
 
 // ========== ТЕМА ==========
 function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
-    const btn = document.getElementById("theme-toggle");
+    var btn = document.getElementById("theme-toggle");
     if (btn) btn.textContent = theme === "dark" ? "☀️" : "🌙";
     localStorage.setItem("theme", theme);
 }
 
 function initTheme() {
-    const saved = localStorage.getItem("theme");
+    var saved = localStorage.getItem("theme");
     if (saved) applyTheme(saved);
     else {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         applyTheme(prefersDark ? "dark" : "light");
     }
 }
 
 function toggleTheme() {
-    const current = document.documentElement.getAttribute("data-theme");
+    var current = document.documentElement.getAttribute("data-theme");
     applyTheme(current === "dark" ? "light" : "dark");
 }
 
@@ -75,157 +75,77 @@ function saveBackup() {
 
 function restoreFromBackup() {
     try {
-        const saved = localStorage.getItem("techniquesBackup");
+        var saved = localStorage.getItem("techniquesBackup");
         if (saved) {
-            const parsed = JSON.parse(saved);
+            var parsed = JSON.parse(saved);
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
         }
     } catch (e) {}
     return null;
 }
 
-function shouldUpdateBase() {
-    const currentVersion = localStorage.getItem("baseVersion");
-    if (currentVersion !== BASE_VERSION) {
-        localStorage.setItem("baseVersion", BASE_VERSION);
-        return true;
-    }
-    return false;
-}
-
-// ========== ЗАГРУЗКА И СОХРАНЕНИЕ ==========
+// ========== ЗАГРУЗКА (СНАЧАЛА ИЗ ПАМЯТИ, ПОТОМ ИЗ СЕТИ) ==========
 async function loadTechniques() {
-    const loader = document.getElementById("loader");
+    var loader = document.getElementById("loader");
     if (loader) loader.style.display = "flex";
 
-    try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error("Не удалось загрузить");
-        let loaded = await response.json();
+    // 1. Мгновенная загрузка из памяти телефона
+    var localData = restoreFromBackup();
+    if (localData) {
+        allTechniques = localData;
+        updateTechniquesCount();
+        displayAllTechniques();
+        if (loader) loader.style.display = "none";
+    }
 
-        if (!Array.isArray(loaded) || loaded.length === 0) {
-            await seedDefaultTechniques();
-            return;
-        } else {
-            const hasBase = loaded.some(t => t.base === true);
-            if (hasBase && shouldUpdateBase()) {
-                const userTechniques = loaded.filter(t => t.base !== true);
-                const newBase = DEFAULT_TECHNIQUES.map((t, i) => ({ id: Date.now() + i, ...t }));
-                allTechniques = [...newBase, ...userTechniques];
-                await rewriteAllTechniques();
-                return;
+    // 2. Обновление из сети в фоне
+    try {
+        var response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Ошибка сети");
+        var loaded = await response.json();
+
+        if (Array.isArray(loaded) && loaded.length > 0) {
+            allTechniques = loaded.map(function(t, i) {
+                return {
+                    id: t.id || (Date.now() + i),
+                    name: t.name || "Без названия",
+                    category: t.category || "основной этап",
+                    description: t.description || "",
+                    details: t.details || "",
+                    link: t.link || "",
+                    base: t.base === true,
+                    rating: Number(t.rating) || 0,
+                    votes: Number(t.votes) || 0
+                };
+            });
+            saveBackup();
+            updateTechniquesCount();
+            if (document.getElementById("all-techniques-container").style.display === "block") {
+                displayAllTechniques();
             }
         }
-
-        // Приводим данные к единому виду, добавляем рейтинг старым приёмам
-        allTechniques = loaded.map((t, i) => ({
-            id: t.id ?? Date.now() + i,
-            name: t.name || "Без названия",
-            category: t.category || "основной этап",
-            description: t.description || "",
-            details: t.details || "",
-            link: t.link || "",
-            base: t.base === true,
-            rating: Number(t.rating) || 0,
-            votes: Number(t.votes) || 0
-        }));
-
     } catch (e) {
-        console.error(e);
-        const backup = restoreFromBackup();
-        if (backup) {
-            allTechniques = backup;
-            showToast("Сервер недоступен. Используется копия.", "error");
-        } else {
-            allTechniques = DEFAULT_TECHNIQUES.map((t, i) => ({ id: Date.now() + i, ...t }));
-            showToast("Ошибка загрузки. Стандартные приёмы.", "error");
+        console.warn("Сеть недоступна, работаем из памяти");
+        if (allTechniques.length === 0) {
+            allTechniques = DEFAULT_TECHNIQUES;
+            updateTechniquesCount();
         }
     } finally {
         if (loader) loader.style.display = "none";
     }
 }
 
-async function seedDefaultTechniques() {
-    for (const t of DEFAULT_TECHNIQUES) {
-        await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(t) });
-    }
-    allTechniques = await fetch(API_URL).then(r => r.json());
-}
-
-async function rewriteAllTechniques() {
-    const old = await fetch(API_URL).then(r => r.json());
-    for (const item of old) await fetch(`${API_URL}/${item.id}`, { method: "DELETE" });
-    for (const t of allTechniques) {
-        await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(t) });
-    }
-    allTechniques = await fetch(API_URL).then(r => r.json());
-}
-
-async function createTechnique(technique) {
-    const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...technique, base: false, rating: 0, votes: 0 })
-    });
-    if (!response.ok) throw new Error("Ошибка");
-    const created = await response.json();
-    saveBackup();
-    return created;
-}
-
-async function deleteTechniqueById(id) {
-    const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (!response.ok) throw new Error("Ошибка");
-    saveBackup();
-}
-
-// ========== РЕЙТИНГ ==========
-async function rateTechnique(id, score) {
-    let voted = JSON.parse(localStorage.getItem('voted') || '{}');
-    if (voted[id]) return showToast("Вы уже оценили этот приём!", "error");
-
-    const tech = allTechniques.find(t => String(t.id) === String(id));
-    if (!tech) return;
-
-    const currentRating = tech.rating || 0;
-    const currentVotes = tech.votes || 0;
-    const newVotes = currentVotes + 1;
-    const newRating = ((currentRating * currentVotes) + score) / newVotes;
-
-    try {
-        await fetch(`${API_URL}/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rating: newRating, votes: newVotes })
-        });
-
-        tech.rating = newRating;
-        tech.votes = newVotes;
-        voted[id] = true;
-        localStorage.setItem('voted', JSON.stringify(voted));
-        saveBackup();
-
-        showToast("Спасибо за оценку!");
-        displayAllTechniques(); // Перерисовать список
-    } catch (e) {
-        showToast("Не удалось сохранить оценку", "error");
-    }
-}
-
-// ========== ГЕНЕРАЦИЯ (Взвешенный рандом) ==========
+// ========== ГЕНЕРАЦИЯ ==========
 function getWeightedRandomTechnique(pool) {
-    // Если голосов меньше 3, даем бонус 2.5, чтобы новые приёмы не тонули
-    const getWeight = (tech) => {
-        const effectiveRating = (tech.votes || 0) < 3 ? 2.5 : (tech.rating || 0);
+    var getWeight = function(tech) {
+        var effectiveRating = (tech.votes || 0) < 3 ? 2.5 : (tech.rating || 0);
         return Math.pow(effectiveRating + 1, 2);
     };
-
-    const totalWeight = pool.reduce((sum, tech) => sum + getWeight(tech), 0);
-    let random = Math.random() * totalWeight;
-
-    for (const tech of pool) {
-        const weight = getWeight(tech);
-        if (random < weight) return tech;
+    var totalWeight = pool.reduce(function(sum, tech) { return sum + getWeight(tech); }, 0);
+    var random = Math.random() * totalWeight;
+    for (var i = 0; i < pool.length; i++) {
+        var weight = getWeight(pool[i]);
+        if (random < weight) return pool[i];
         random -= weight;
     }
     return pool[0];
@@ -233,32 +153,26 @@ function getWeightedRandomTechnique(pool) {
 
 function generateLessonStructure() {
     if (allTechniques.length === 0) return showToast("Список приёмов пуст.", "error");
+    var categories = ["актуализация", "основной этап", "закрепление", "рефлексия"];
+    var selected = [];
+    var usedIds = new Set();
 
-    const categories = ["актуализация", "основной этап", "закрепление", "рефлексия"];
-    const selected = [];
-    const usedIds = new Set();
-
-    categories.forEach(cat => {
-        const pool = allTechniques.filter(t => t.category === cat && !usedIds.has(t.id));
+    categories.forEach(function(cat) {
+        var pool = allTechniques.filter(function(t) { return t.category === cat && !usedIds.has(t.id); });
         if (pool.length > 0) {
-            const pick = getWeightedRandomTechnique(pool);
+            var pick = getWeightedRandomTechnique(pool);
             selected.push(pick);
             usedIds.add(pick.id);
         }
     });
 
     if (Math.random() < 0.5) {
-        const fiz = allTechniques.filter(t => t.category === "физкультминутка" && !usedIds.has(t.id));
-        if (fiz.length > 0) {
-            selected.splice(2, 0, getWeightedRandomTechnique(fiz));
-        }
+        var fiz = allTechniques.filter(function(t) { return t.category === "физкультминутка" && !usedIds.has(t.id); });
+        if (fiz.length > 0) selected.splice(2, 0, getWeightedRandomTechnique(fiz));
     }
-
     if (selected.length < 3) {
-        const rest = allTechniques.filter(t => !usedIds.has(t.id));
-        while (selected.length < 3 && rest.length > 0) {
-            selected.push(rest.splice(Math.floor(Math.random() * rest.length), 1)[0]);
-        }
+        var rest = allTechniques.filter(function(t) { return !usedIds.has(t.id); });
+        while (selected.length < 3 && rest.length > 0) selected.push(rest.splice(Math.floor(Math.random() * rest.length), 1)[0]);
     }
 
     lastGenerated = selected;
@@ -268,43 +182,27 @@ function generateLessonStructure() {
 
 // ========== ОТОБРАЖЕНИЕ ==========
 function displayLessonStructure(techniques) {
-    const container = document.getElementById("lesson-structure-container");
+    var container = document.getElementById("lesson-structure-container");
     container.innerHTML = "";
     if (!techniques.length) return;
 
-    const ul = document.createElement("ul");
-    techniques.forEach((tech, index) => {
-        const li = document.createElement("li");
-        
-        let detailsHTML = "";
+    var ul = document.createElement("ul");
+    techniques.forEach(function(tech, index) {
+        var li = document.createElement("li");
+        var detailsHTML = "";
         if (tech.details || tech.link) {
-            let linkHTML = tech.link ? `<a href="${tech.link}" target="_blank" class="btn-resource-link">🔗 Полезный материал</a>` : "";
-            detailsHTML = `
-                <div class="tech-details-block" id="details-${tech.id}">
-                    <p>${tech.details || ""}</p>
-                    ${linkHTML}
-                </div>
-            `;
+            var linkHTML = tech.link ? '<a href="' + tech.link + '" target="_blank" class="btn-resource-link">🔗 Полезный материал</a>' : "";
+            detailsHTML = '<div class="tech-details-block" id="details-' + tech.id + '"><p>' + (tech.details || "") + '</p>' + linkHTML + '</div>';
         }
-
-        let toggleBtn = (tech.details || tech.link) 
-            ? `<button class="btn-toggle-details" onclick="toggleDetails('${tech.id}', this)">Подробнее ▾</button>` 
-            : "";
-
-        li.innerHTML = `
-            <span class="category-tag">${capitalize(tech.category)}</span>
-            <strong>${index + 1}. ${tech.name}</strong>
-            <div>${tech.description || "Нет описания"}</div>
-            ${toggleBtn}
-            ${detailsHTML}
-        `;
+        var toggleBtn = (tech.details || tech.link) ? '<button class="btn-toggle-details" onclick="toggleDetails(\'' + tech.id + '\', this)">Подробнее ▾</button>' : "";
+        li.innerHTML = '<span class="category-tag">' + capitalize(tech.category) + '</span><strong>' + (index + 1) + '. ' + tech.name + '</strong><div>' + (tech.description || "Нет описания") + '</div>' + toggleBtn + detailsHTML;
         ul.appendChild(li);
     });
     container.appendChild(ul);
 }
 
 window.toggleDetails = function(id, btn) {
-    const block = document.getElementById(`details-${id}`);
+    var block = document.getElementById("details-" + id);
     if (block) {
         block.classList.toggle("active");
         btn.textContent = block.classList.contains("active") ? "Скрыть ▴" : "Подробнее ▾";
@@ -312,140 +210,130 @@ window.toggleDetails = function(id, btn) {
 }
 
 function displayAllTechniques() {
-    const container = document.getElementById("all-techniques-container");
+    var container = document.getElementById("all-techniques-container");
+    if (!container) return;
     container.style.display = "block";
     container.innerHTML = "";
 
-    let list = allTechniques;
-    if (currentFilter !== "all") list = allTechniques.filter(t => t.category === currentFilter);
-
-    // Если нажата сортировка по рейтингу
-    if (sortByRating) {
-        list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    }
+    var list = allTechniques;
+    if (currentFilter !== "all") list = allTechniques.filter(function(t) { return t.category === currentFilter; });
+    if (sortByRating) list.sort(function(a, b) { return (b.rating || 0) - (a.rating || 0); });
 
     if (list.length === 0) {
         container.innerHTML = "<p>В этой категории пока нет приёмов.</p>";
         return;
     }
 
-    const ul = document.createElement("ul");
-    list.forEach((tech) => {
-        const li = document.createElement("li");
+    var ul = document.createElement("ul");
+    list.forEach(function(tech) {
+        var li = document.createElement("li");
+        var ratingHTML = (tech.votes > 0) ? '<span class="rating-badge">★ ' + tech.rating.toFixed(1) + '</span>' : '<span class="rating-badge" style="opacity:0.6">Пока нет оценок</span>';
         
-        let ratingHTML = "";
-        if (tech.votes > 0) {
-            ratingHTML = `<span class="rating-badge" title="${tech.votes} оценок">★ ${tech.rating.toFixed(1)}</span>`;
-        } else {
-            ratingHTML = `<span class="rating-badge" style="opacity:0.6">Пока нет оценок</span>`;
-        }
-
-        li.innerHTML = `
-            <div class="tech-header">
-                <div class="tech-title">
-                    <span class="category-tag">${capitalize(tech.category)}</span>
-                    <strong>${tech.name}</strong>
-                    ${ratingHTML}
-                </div>
-                <div class="tech-actions">
-                    <button class="delete-btn" data-id="${tech.id}">✕ Удалить</button>
-                </div>
-            </div>
-            <div>${tech.description || "Нет описания"}</div>
-            
-            <!-- Звездочки для голосования -->
-            <div class="stars" data-id="${tech.id}">
-                <span class="star" data-score="1">★</span>
-                <span class="star" data-score="2">★</span>
-                <span class="star" data-score="3">★</span>
-                <span class="star" data-score="4">★</span>
-                <span class="star" data-score="5">★</span>
-            </div>
-        `;
+        li.innerHTML = 
+            '<div class="tech-header">' +
+                '<div class="tech-title"><span class="category-tag">' + capitalize(tech.category) + '</span><strong>' + tech.name + '</strong>' + ratingHTML + '</div>' +
+                '<div class="tech-actions"><button class="delete-btn" data-id="' + tech.id + '">✕ Удалить</button></div>' +
+            '</div>' +
+            '<div>' + (tech.description || "Нет описания") + '</div>' +
+            '<div class="stars" data-id="' + tech.id + '">' +
+                '<span class="star" data-score="1">★</span><span class="star" data-score="2">★</span><span class="star" data-score="3">★</span><span class="star" data-score="4">★</span><span class="star" data-score="5">★</span>' +
+            '</div>';
+        
         ul.appendChild(li);
 
-        const starsContainer = li.querySelector('.stars');
-        const stars = starsContainer.querySelectorAll('.star');
-        
-        let voted = JSON.parse(localStorage.getItem('voted') || '{}');
+        var starsContainer = li.querySelector('.stars');
+        var stars = starsContainer.querySelectorAll('.star');
+        var voted = JSON.parse(localStorage.getItem('voted') || '{}');
+
         if (voted[tech.id]) {
             starsContainer.style.opacity = '0.5';
             starsContainer.title = "Вы уже оценили этот приём";
         } else {
-            stars.forEach((star, index) => {
-                star.addEventListener('mouseenter', () => {
-                    stars.forEach((s, i) => s.classList.toggle('hovered', i <= index));
+            stars.forEach(function(star, index) {
+                star.addEventListener('mouseenter', function() {
+                    stars.forEach(function(s, i) { s.classList.toggle('hovered', i <= index); });
                 });
-            });
-            starsContainer.addEventListener('mouseleave', () => {
-                stars.forEach(s => s.classList.remove('hovered'));
-            });
-            
-            stars.forEach(star => {
-                star.addEventListener('click', (e) => {
+                star.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    const score = Number(star.dataset.score);
-                    rateTechnique(tech.id, score);
+                    rateTechnique(tech.id, Number(star.dataset.score));
                 });
             });
+            starsContainer.addEventListener('mouseleave', function() { stars.forEach(function(s) { s.classList.remove('hovered'); }); });
         }
     });
 
     container.appendChild(ul);
-
-    document.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", handleDeleteTechnique);
-    });
+    document.querySelectorAll(".delete-btn").forEach(function(btn) { btn.addEventListener("click", handleDeleteTechnique); });
 }
 
-// ========== ДЕЙСТВИЯ ==========
+// ========== ДЕЙСТВИЯ И РЕЙТИНГ ==========
+async function rateTechnique(id, score) {
+    var voted = JSON.parse(localStorage.getItem('voted') || '{}');
+    if (voted[id]) return showToast("Вы уже оценили этот приём!", "error");
+    var tech = allTechniques.find(function(t) { return String(t.id) === String(id); });
+    if (!tech) return;
+
+    var currentRating = tech.rating || 0;
+    var currentVotes = tech.votes || 0;
+    var newVotes = currentVotes + 1;
+    var newRating = ((currentRating * currentVotes) + score) / newVotes;
+
+    try {
+        await fetch(API_URL + "/" + id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rating: newRating, votes: newVotes })
+        });
+        tech.rating = newRating;
+        tech.votes = newVotes;
+        voted[id] = true;
+        localStorage.setItem('voted', JSON.stringify(voted));
+        saveBackup();
+        showToast("Спасибо за оценку!");
+        displayAllTechniques();
+    } catch (e) {
+        showToast("Не удалось сохранить оценку", "error");
+    }
+}
+
 function capitalize(str) {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function plural(n, forms) {
-    const mod10 = n % 10;
-    const mod100 = n % 100;
+    var mod10 = n % 10, mod100 = n % 100;
     if (mod10 === 1 && mod100 !== 11) return forms[0];
     if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return forms[1];
     return forms[2];
 }
 
 function updateTechniquesCount() {
-    const el = document.getElementById("techniques-count");
+    var el = document.getElementById("techniques-count");
     if (!el) return;
-    const total = allTechniques.length;
-    el.textContent = `В базе ${total} ${plural(total, ["приём", "приёма", "приёмов"])}`;
-    el.classList.remove("updated");
-    void el.offsetWidth;
-    el.classList.add("updated");
+    var total = allTechniques.length;
+    el.textContent = "В базе " + total + " " + plural(total, ["приём", "приёма", "приёмов"]);
 }
 
 function copyStructure() {
     if (!lastGenerated.length) return showToast("Сначала создайте структуру.", "error");
-    const text = lastGenerated.map((t, i) => {
-        let str = `${i + 1}. [${capitalize(t.category)}] ${t.name} — ${t.description || "без описания"}`;
-        if (t.details) str += `\n   Подробнее: ${t.details}`;
-        if (t.link) str += `\n   Ссылка: ${t.link}`;
+    var text = lastGenerated.map(function(t, i) {
+        var str = (i + 1) + ". [" + capitalize(t.category) + "] " + t.name + " — " + (t.description || "без описания");
+        if (t.details) str += "\n   Подробнее: " + t.details;
+        if (t.link) str += "\n   Ссылка: " + t.link;
         return str;
     }).join("\n\n");
-    navigator.clipboard.writeText(text).then(() => showToast("Скопировано!"));
+    navigator.clipboard.writeText(text).then(function() { showToast("Скопировано!"); });
 }
 
 function toggleAllTechniques() {
-    const container = document.getElementById("all-techniques-container");
-    const mainBtn = document.getElementById("show-all-button");
-    const closeWrapper = document.getElementById("close-list-wrapper");
-
+    var container = document.getElementById("all-techniques-container");
+    var mainBtn = document.getElementById("show-all-button");
+    var closeWrapper = document.getElementById("close-list-wrapper");
     if (container.style.display === "block") {
-        container.style.display = "none";
-        closeWrapper.style.display = "none";
-        mainBtn.textContent = "Показать все приёмы";
+        container.style.display = "none"; closeWrapper.style.display = "none"; mainBtn.textContent = "Показать все приёмы";
     } else {
-        displayAllTechniques();
-        closeWrapper.style.display = "block";
-        mainBtn.textContent = "Скрыть список";
+        displayAllTechniques(); closeWrapper.style.display = "block"; mainBtn.textContent = "Скрыть список";
     }
 }
 
@@ -457,48 +345,36 @@ function hideAllTechniques() {
 
 function setFilter(category) {
     currentFilter = category;
-    sortByRating = false; // Сбрасываем сортировку при смене категории
+    sortByRating = false;
     document.getElementById("sort-by-rating").classList.remove("active");
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-        if(btn.id !== "sort-by-rating") {
-            btn.classList.toggle("active", btn.dataset.category === category);
-        }
+    document.querySelectorAll(".filter-btn").forEach(function(btn) {
+        if(btn.id !== "sort-by-rating") btn.classList.toggle("active", btn.dataset.category === category);
     });
-    if (document.getElementById("all-techniques-container").style.display === "block") {
-        displayAllTechniques();
-    }
+    if (document.getElementById("all-techniques-container").style.display === "block") displayAllTechniques();
 }
 
 function toggleSort() {
     sortByRating = !sortByRating;
     document.getElementById("sort-by-rating").classList.toggle("active", sortByRating);
-    if (document.getElementById("all-techniques-container").style.display === "block") {
-        displayAllTechniques();
-    }
+    if (document.getElementById("all-techniques-container").style.display === "block") displayAllTechniques();
 }
 
 async function handleDeleteTechnique(event) {
-    const password = prompt("Введите пароль администратора:");
+    var password = prompt("Введите пароль администратора:");
     if (password !== ADMIN_PASSWORD) return showToast("Неверный пароль.", "error");
-
-    const id = event.target.dataset.id;
-    const tech = allTechniques.find(t => String(t.id) === String(id));
-    if (!tech || !confirm(`Удалить приём «${tech.name}»?`)) return;
-
+    var id = event.target.dataset.id;
+    var tech = allTechniques.find(function(t) { return String(t.id) === String(id); });
+    if (!tech || !confirm("Удалить приём «" + tech.name + "»?")) return;
     try {
-        await deleteTechniqueById(id);
-        allTechniques = allTechniques.filter(t => String(t.id) !== String(id));
-        updateTechniquesCount();
-        displayAllTechniques();
-        showToast("Приём удалён.");
-    } catch (e) {
-        showToast("Ошибка удаления.", "error");
-    }
+        await fetch(API_URL + "/" + id, { method: "DELETE" });
+        allTechniques = allTechniques.filter(function(t) { return String(t.id) !== String(id); });
+        updateTechniquesCount(); displayAllTechniques(); showToast("Приём удалён.");
+    } catch (e) { showToast("Ошибка удаления.", "error"); }
 }
 
 function toggleAddForm(show) {
-    const form = document.getElementById("add-technique-form");
-    const btn = document.getElementById("show-add-form-button");
+    var form = document.getElementById("add-technique-form");
+    var btn = document.getElementById("show-add-form-button");
     form.style.display = show ? "block" : "none";
     btn.style.display = show ? "none" : "inline-block";
     if (!show) {
@@ -512,54 +388,49 @@ function toggleAddForm(show) {
 
 async function handleAddTechnique(event) {
     event.preventDefault();
-    const name = document.getElementById("technique-name").value.trim();
-    const category = document.getElementById("technique-category").value;
-    const description = document.getElementById("technique-description").value.trim();
-    const details = document.getElementById("technique-details").value.trim();
-    const link = document.getElementById("technique-link").value.trim();
+    var name = document.getElementById("technique-name").value.trim();
+    var category = document.getElementById("technique-category").value;
+    var description = document.getElementById("technique-description").value.trim();
+    var details = document.getElementById("technique-details").value.trim();
+    var link = document.getElementById("technique-link").value.trim();
 
     if (!name) return showToast("Введите название.", "error");
     if (!category) return showToast("Выберите категорию.", "error");
 
     try {
-        const created = await createTechnique({ name, category, description, details, link });
+        var response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: name, category: category, description: description, details: details, link: link, base: false, rating: 0, votes: 0 })
+        });
+        if (!response.ok) throw new Error("Ошибка");
+        var created = await response.json();
         allTechniques.push(created);
-        updateTechniquesCount();
-        toggleAddForm(false);
-        showToast("Приём добавлен!");
+        saveBackup(); updateTechniquesCount(); toggleAddForm(false); showToast("Приём добавлен!");
         if (document.getElementById("all-techniques-container").style.display === "block") displayAllTechniques();
-    } catch (e) {
-        showToast("Не удалось сохранить.", "error");
-    }
-}
-
-function isLowPowerDevice() {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
-    const cores = navigator.hardwareConcurrency || 4;
-    const memory = navigator.deviceMemory || 4;
-    return (cores <= 2 || memory <= 2 || window.innerWidth < 360);
+    } catch (e) { showToast("Не удалось сохранить.", "error"); }
 }
 
 // ========== ЗАПУСК ==========
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", function() {
     initTheme();
     document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
-    if (isLowPowerDevice()) document.body.classList.add("reduced-motion");
 
-    await loadTechniques();
-    updateTechniquesCount();
+    loadTechniques().then(function() {
+        document.getElementById("generate-button").addEventListener("click", generateLessonStructure);
+        document.getElementById("regenerate-button").addEventListener("click", generateLessonStructure);
+        document.getElementById("copy-button").addEventListener("click", copyStructure);
+        document.getElementById("show-all-button").addEventListener("click", toggleAllTechniques);
+        document.getElementById("hide-all-button").addEventListener("click", hideAllTechniques);
+        document.getElementById("show-add-form-button").addEventListener("click", function() { toggleAddForm(true); });
+        document.getElementById("cancel-add-button").addEventListener("click", function() { toggleAddForm(false); });
+        document.getElementById("add-technique-form").addEventListener("submit", handleAddTechnique);
+        document.getElementById("sort-by-rating").addEventListener("click", toggleSort);
 
-    document.getElementById("generate-button").addEventListener("click", generateLessonStructure);
-    document.getElementById("regenerate-button").addEventListener("click", generateLessonStructure);
-    document.getElementById("copy-button").addEventListener("click", copyStructure);
-    document.getElementById("show-all-button").addEventListener("click", toggleAllTechniques);
-    document.getElementById("hide-all-button").addEventListener("click", hideAllTechniques);
-    document.getElementById("show-add-form-button").addEventListener("click", () => toggleAddForm(true));
-    document.getElementById("cancel-add-button").addEventListener("click", () => toggleAddForm(false));
-    document.getElementById("add-technique-form").addEventListener("submit", handleAddTechnique);
-    document.getElementById("sort-by-rating").addEventListener("click", toggleSort);
-
-    document.querySelectorAll(".filter-btn:not(#sort-by-rating)").forEach(btn => {
-        btn.addEventListener("click", () => setFilter(btn.dataset.category));
+        document.querySelectorAll(".filter-btn").forEach(function(btn) {
+            if (btn.id !== "sort-by-rating") {
+                btn.addEventListener("click", function() { setFilter(btn.dataset.category); });
+            }
+        });
     });
 });
